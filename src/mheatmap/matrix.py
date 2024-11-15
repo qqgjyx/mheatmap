@@ -1,21 +1,14 @@
-"""
-Mosaic heatmap (Name TBD)
-"""
+"""Functions to visualize matrices of data"""
 
 # Copyright (c) 2024 Juntang Wang
-# License: MIT
+# All rights reserved.
+# Licensed under the MIT License.
 
-# Project: pyC4H
-# Code prototype: Xiaobai Sun, 2024
-
-# Drafted imitating seaborn.heatmap()
-
-from matplotlib import pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 from seaborn import despine
 from seaborn.matrix import _HeatMapper
 from seaborn.utils import (
-    _draw_figure,
     axis_ticklabels_overlap
 )
 
@@ -25,7 +18,7 @@ from seaborn.utils import (
 #                                                                                                                      #
 ########################################################################################################################
 
-def get_mh_xyc(data: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _get_mh_xyc(data: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Get the x, y, edges and Xc, Yc of the mosaic data."""
 
     # Calculate total samples and proportions for rows and columns
@@ -82,7 +75,7 @@ class _MosaicHeatMapper(_HeatMapper):
             kws.setdefault("vmax", self.vmax)
         
         # Get the x and y edges of the mosaic data
-        x_edges, y_edges, x_centers, y_centers = get_mh_xyc(self.plot_data)
+        x_edges, y_edges, x_centers, y_centers = _get_mh_xyc(self.plot_data)
         
         mesh = ax.pcolormesh(x_edges, y_edges, self.plot_data, shading='flat', cmap=self.cmap, **kws)
         

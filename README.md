@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/mheatmap.svg)](https://badge.fury.io/py/mheatmap)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Python package for advanced heatmap visualization and matrix analysis, featuring mosaic heatmaps, confusion matrix post-processing, and spectral reordering capabilities.
+A Python package for advanced heatmap visualization and matrix analysis, featuring mosaic/proportional heatmaps, confusion matrix post-processing, and spectral reordering capabilities.
 
 ## Features
 
@@ -15,7 +15,16 @@ A Python package for advanced heatmap visualization and matrix analysis, featuri
 
 ## Installation
 
+- Install from PyPI
+
 ```bash
 pip install mheatmap
 ```
 
+- Install from source
+
+```bash
+git clone https://github.com/qqgjyx/mheatmap.git
+cd mheatmap
+pip install .
+```

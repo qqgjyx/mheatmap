@@ -72,7 +72,7 @@ def mask_zeros_from_gt(labels, gt, mode='labels'):
         raise ValueError("Mode must be either 'labels' or 'image'")
 
 
-def align_labels(y_true, y_pred, mask_zeros=True):
+def _align_labels(y_true, y_pred, mask_zeros=True):
     """Align predicted cluster labels with ground truth labels using sklearn's metrics.
     
     Use Jonker-Volgenant algorithm to find the optimal assignment.
@@ -121,7 +121,7 @@ def align_labels(y_true, y_pred, mask_zeros=True):
 #                       Main Class
 # ----------------------------------------------------------------------------------------------------------------------
 class AMCPostprocess:
-    """Post-processing class for Automatic Model Calibration (AMC).
+    """Post-processing class for Automatic Model Calibration (AMC) Align Mask Confusion.
     
     A comprehensive post-processing pipeline for model predictions that handles:
     - Label alignment between predictions and ground truth
@@ -169,7 +169,7 @@ class AMCPostprocess:
         self.gt = gt.copy()  # Store original ground truth
         
         # Perform optimal label alignment
-        self.aligned_pred_ = align_labels(self.gt, self.pred_)
+        self.aligned_pred_ = _align_labels(self.gt, self.pred_)
         
         # Apply zero-value masking
         self.masked_pred = mask_zeros_from_gt(self.aligned_pred_, self.gt)

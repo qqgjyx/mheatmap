@@ -28,7 +28,7 @@ import pandas as pd
 #                       Helper functions
 # ----------------------------------------------------------------------------------------------------------------------
 
-def make_rms_map(conf_mat: np.ndarray, threshold: float = 0.37) -> dict:
+def _make_rms_map(conf_mat: np.ndarray, threshold: float = 0.37) -> dict:
     """
     Generates a reverse merge/split mapping based on confusion matrix analysis.
     
@@ -74,7 +74,7 @@ def make_rms_map(conf_mat: np.ndarray, threshold: float = 0.37) -> dict:
     return rms_map
     
     
-def make_rms_p(rms_map: dict, n: int) -> np.ndarray:
+def _make_rms_p(rms_map: dict, n: int) -> np.ndarray:
     """
     Constructs a permutation matrix based on merge/split relationships.
     
@@ -133,7 +133,7 @@ def make_rms_p(rms_map: dict, n: int) -> np.ndarray:
     return P
     
     
-def permute_matrix(matrix: np.ndarray, P: np.ndarray) -> np.ndarray:
+def _permute_matrix(matrix: np.ndarray, P: np.ndarray) -> np.ndarray:
     """
     Permute a matrix using a permutation matrix P.
     
@@ -154,7 +154,7 @@ def permute_matrix(matrix: np.ndarray, P: np.ndarray) -> np.ndarray:
     return P @ matrix @ P.T
     
     
-def permute_labels(labels: np.ndarray, P: np.ndarray) -> np.ndarray:
+def _permute_labels(labels: np.ndarray, P: np.ndarray) -> np.ndarray:
     """
     Permute labels using a permutation matrix P.
     
@@ -173,7 +173,7 @@ def permute_labels(labels: np.ndarray, P: np.ndarray) -> np.ndarray:
     return P @ labels
 
 
-def make_rms_label_map(labels: np.ndarray, rms_map: dict) -> dict:
+def _make_rms_label_map(labels: np.ndarray, rms_map: dict) -> dict:
     """
     Convert an RMS map using numeric indices to one using class labels.
     
@@ -234,9 +234,9 @@ class RMSPermute:
         self.n = len(conf_mat)
         
         # Compute mappings and permutation matrix
-        self.rms_map = make_rms_map(conf_mat, threshold)
-        self.P = make_rms_p(self.rms_map, self.n)
-        self.rms_label_map = make_rms_label_map(labels, self.rms_map)
+        self.rms_map = _make_rms_map(conf_mat, threshold)
+        self.P = _make_rms_p(self.rms_map, self.n)
+        self.rms_label_map = _make_rms_label_map(labels, self.rms_map)
         
     def get_permuted_matrix(self) -> np.ndarray:
         """
@@ -247,7 +247,7 @@ class RMSPermute:
         np.ndarray
             The permuted confusion matrix
         """
-        return permute_matrix(self.conf_mat, self.P)
+        return _permute_matrix(self.conf_mat, self.P)
         
     def get_permuted_labels(self) -> np.ndarray:
         """
@@ -258,7 +258,7 @@ class RMSPermute:
         np.ndarray
             The permuted labels array
         """
-        return permute_labels(self.labels, self.P)
+        return _permute_labels(self.labels, self.P)
         
     def get_rms_mapping(self) -> dict:
         """
