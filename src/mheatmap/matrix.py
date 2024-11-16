@@ -179,12 +179,12 @@ def mosaic_heatmap(
     **kwargs,
 ):
     """`mosaic_heatmap(data, ...)`
-    
+
     Plot mosaic data as a color-encoded matrix.
 
-    Creates a mosaic heatmap where the column widths and row heights are proportional 
-    to the marginal sums of the data matrix. This provides a visualization that 
-    encodes both the cell values through color and the marginal distributions 
+    Creates a mosaic heatmap where the column widths and row heights are proportional
+    to the marginal sums of the data matrix. This provides a visualization that
+    encodes both the cell values through color and the marginal distributions
     through cell sizes.
 
     Parameters
@@ -206,8 +206,8 @@ def mosaic_heatmap(
         If True and ``vmin`` or ``vmax`` are absent, compute colormap range using
         robust quantiles instead of extreme values.
     annot : bool or array-like, optional
-        If True, write the data value in each cell. If array-like with same shape 
-        as ``data``, use this for annotation instead of the data. DataFrames match 
+        If True, write the data value in each cell. If array-like with same shape
+        as ``data``, use this for annotation instead of the data. DataFrames match
         on position, not index.
     fmt : str, optional
         String formatting code for annotation values. Default: '.2g'
@@ -248,10 +248,10 @@ def mosaic_heatmap(
     >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> from mheatmap import mosaic_heatmap
-    >>> 
+    >>>
     >>> # Generate sample confusion matrix data
     >>> data = np.array([[10, 2, 0], [1, 8, 3], [0, 1, 12]])
-    >>> 
+    >>>
     >>> # Create mosaic heatmap with annotations
     >>> fig, ax = plt.subplots(figsize=(8, 6))
     >>> mosaic_heatmap(data, annot=True, cmap='YlOrRd', fmt='d',

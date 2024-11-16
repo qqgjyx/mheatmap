@@ -25,7 +25,7 @@ and spectral reordering capabilities.
 
 - **Spectral Reordering**  
   Reorder matrices based on spectral analysis.
-  ![Spectral reordering example](examples/images/spectral_reordering.png)
+  ![Spectral reordering example](examples/images/spectral_permutation.png)
 
 - **RMS (Reverse Merge/Split) Analysis**  
   Perform advanced permutation analysis to explore matrix structures.  

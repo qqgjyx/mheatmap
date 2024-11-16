@@ -341,9 +341,9 @@ def rms_permute(confusion_matrix: np.ndarray, labels: np.ndarray) -> tuple:
 
     Perform reverse merge/split (RMS) permutation analysis on a confusion matrix.
 
-    This function analyzes and permutes a confusion matrix to identify merge and split 
-    relationships between predicted and ground truth labels. A merge relationship occurs 
-    when multiple ground truth labels map to the same predicted label, while a split 
+    This function analyzes and permutes a confusion matrix to identify merge and split
+    relationships between predicted and ground truth labels. A merge relationship occurs
+    when multiple ground truth labels map to the same predicted label, while a split
     relationship occurs when a single ground truth label maps to multiple predicted labels.
 
     Parameters

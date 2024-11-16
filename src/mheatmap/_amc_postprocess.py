@@ -31,11 +31,11 @@ from scipy.optimize import linear_sum_assignment
 ###############################################################################
 def mask_zeros_from_gt(labels, gt, mode="labels"):
     """`mask_zeros_from_gt(labels, gt, mode="labels")`
-    
+
     Mask unlabeled points (zeros) from ground truth labels.
 
-    This function handles both 1D and 2D label arrays by masking points that correspond 
-    to zeros in the ground truth labels. For image mode, it preserves the 2D spatial 
+    This function handles both 1D and 2D label arrays by masking points that correspond
+    to zeros in the ground truth labels. For image mode, it preserves the 2D spatial
     structure of the input.
 
     Parameters
@@ -229,7 +229,9 @@ class _AMCPostprocess:
         return self.conf_mat_labels
 
 
-def amc_postprocess(pred_: np.ndarray, gt: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def amc_postprocess(
+    pred_: np.ndarray, gt: np.ndarray
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """`amc_postprocess(pred_, gt)`
 
     Post-process predictions by aligning labels and computing confusion matrix.

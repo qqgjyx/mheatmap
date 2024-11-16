@@ -45,10 +45,10 @@ print(f"y_pred shape: {len(y_pred)}")
 ## AMC Post-processing
 
 - Alignment with `Hungarian` algorithm
-- Masking the zeros (unlabeled pixels) with [mask_zeros_from_gt](../api/amc-postprocess#mask_zeros_from_gt)
+- Masking the zeros (unlabeled pixels) with [mask_zeros_from_gt](../api/amc-postprocess.md)
 - Computing the confusion matrix
 
-See [AMC Post-processing](../api/amc-postprocess) for more details.
+See [AMC Post-processing](../api/amc-postprocess.md) for more details.
 
 ```python
 # AMC post-processing

@@ -22,9 +22,9 @@ def spectral_permute(conf_mat, labels):
 
     Perform spectral reordering of a confusion matrix using the Fiedler vector.
 
-    This function applies spectral reordering to rearrange the rows and columns of a 
-    confusion matrix based on the eigenvector corresponding to the second smallest 
-    eigenvalue (Fiedler vector) of the graph Laplacian. This ordering tends to group 
+    This function applies spectral reordering to rearrange the rows and columns of a
+    confusion matrix based on the eigenvector corresponding to the second smallest
+    eigenvalue (Fiedler vector) of the graph Laplacian. This ordering tends to group
     similar classes together, making block structures more apparent.
 
     Parameters
