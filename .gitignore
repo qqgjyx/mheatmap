@@ -23,3 +23,7 @@ wheels/
 .vscode/
 examples/*.png
 
+.cache/
+.venv/
+site/
+

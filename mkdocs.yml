@@ -1,0 +1,18 @@
+site_name: mheatmap
+theme:
+  name: material
+
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          setup_commands:
+            - "import sys; sys.path.insert(0, './src')"  # Use './src' to point to the correct path
+          options:
+            docstring_style: numpy
+  - offline
+  - search
+  - awesome-pages
+  - tags
