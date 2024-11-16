@@ -1,0 +1,5 @@
+collapse: true
+nav:
+  - 快速开始: getting-started.md
+  - 安装: installation.md
+  - API 文档 (English): api.md

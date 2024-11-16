@@ -16,8 +16,9 @@ and spectral reordering capabilities.
     - [Install from PyPI](#install-from-pypi)
     - [Install from Source](#install-from-source)
 3. [📘 Documentation](#-documentation)
-4. [🛠 Contributing](#-contributing)
-5. [📝 License](#-license)
+4. [📚 Examples](#-examples)
+5. [🛠 Contributing](#-contributing)
+6. [📝 License](#-license)
 
 ---
 
@@ -25,18 +26,18 @@ and spectral reordering capabilities.
 
 - **Mosaic Heatmap**  
   Visualize matrix values with proportionally-sized cells.  
-  ![Comparison between normal and mosaic heatmap](examples/images/basic_mosaic_heatmap.png)
+  ![Comparison between normal and mosaic heatmap](docs/examples/images/basic_mosaic_heatmap.png)
 
 - **Automatic Model Calibration (AMC)**  
   Align, Mask, and Confusion—an algorithm for post-processing confusion matrices.
 
 - **Spectral Reordering**  
   Reorder matrices based on spectral analysis.
-  ![Spectral reordering example](examples/images/spectral_reordering.png)
+  ![Spectral reordering example](docs/examples/images/spectral_reordering.png)
 
 - **RMS (Reverse Merge/Split) Analysis**  
   Perform advanced permutation analysis to explore matrix structures.  
-  ![RMS permutation example](examples/images/rms_permutation.png)
+  ![RMS permutation example](docs/examples/images/rms_permutation.png)
 
 ---
 
@@ -58,13 +59,11 @@ pip install .
 
 ## 📘 Documentation
 
-Comprehensive documentation is available in the `docs/` directory,
-including guides on:
+Comprehensive documentation is available [here](https://www.qqgjyx.com/mheatmap).
 
-- [Mosaic Heatmap](docs/mosaic_heatmap.md)
-- [AMC Post-processing](docs/amc_postprocess.md)
-- [Spectral Reordering](docs/spectral_reordering.md)
-- [RMS Permutation](docs/rms_permutation.md)
+## 📚 Examples
+
+See [Examples](docs/examples) for more detailed examples.
 
 ## 🛠 Contributing
 

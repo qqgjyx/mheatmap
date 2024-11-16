@@ -1,8 +1,65 @@
+copyright: Copyright &copy; 2024 Juntang Wang
+repo_url: https://github.com/qqgjyx/mheatmap
+edit_uri: edit/main/docs/
+extra_css:
+  - stylesheets/extra.css
+  - https://unpkg.com/katex@0/dist/katex.min.css
 site_name: mheatmap
-site_url: https://mheatmap.qqgjyx.com/
+site_url: https://qqgjyx.com/mheatmap/
 theme:
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    # - navigation.sections
+    # - navigation.expand
+    - navigation.prune
+    - navigation.indexes
+    - navigation.top
+    # - toc.integrate
+    - search.suggest
+    - search.highlight
+    # - header.autohide
+    - announce.dismiss
+    # - navigation.footer
+    - content.action.edit
+    - content.code.copy
+    - content.code.annotate
   name: material
-
+  palette: 
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+      primary: black
+      accent: custom
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/lightbulb 
+        name: Switch to dark mode
+      primary: custom
+      accent: custom
+  font:
+    text: EB Garamond
+    code: JetBrains Mono
+  logo: assets/mheatmap.png
+  favicon: assets/mheatmap.png
+  icon:
+    previous: fontawesome/solid/angle-left
+    next: fontawesome/solid/angle-right
+    tag:
+      html: fontawesome/brands/html5
+      js: fontawesome/brands/js
+      css:  fontawesome/brands/css3
+    repo: fontawesome/brands/github
+    edit: material/pencil 
+    view: material/eye
+  custom_dir: overrides
 plugins:
   - mkdocstrings:
       handlers:
@@ -13,5 +70,64 @@ plugins:
             docstring_style: numpy
   - offline
   - search
+  - awesome-pages
   - tags
-  # - awesome-pages
+markdown_extensions:
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      options:
+        custom_icons:
+          - overrides/.icons
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.arithmatex:
+      generic: true
+extra:
+  tags:
+    HTML5: html
+    JavaScript: js
+    CSS: css
+  version:
+    provider: mike
+    alias: true
+    default: stable
+  social:
+      - icon: fontawesome/brands/github
+        link: https://github.com/qqgjyx
+      - icon: fontawesome/brands/gitlab
+        link: https://gitlab.oit.duke.edu/jw853
+      - icon: fontawesome/brands/linkedin
+        link: https://www.linkedin.com/in/q9gjyx/
+      - icon: bootstrap/file-person
+        link: https://www.qqgjyx.com
+        name: Juntang Wang personal website
+  generator: false
+  # alternate:
+  #   - name: English
+  #     link: /
+  #     lang: en
+  #   - name: 中文
+  #     link: /zh/
+  #     lang: zh
+  # homepage: https://mheatmap.qqgjyx.com/
+  # consent:
+  #   title: Cookie consent
+  #   description: >- 
+  #     We use cookies to recognize your repeated visits and preferences, as well
+  #     as to measure the effectiveness of our documentation and whether users
+  #     find what they're searching for. With your consent, you're helping us to
+  #     make our documentation better.
+extra_javascript:
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js

@@ -1,0 +1,4 @@
+nav:
+  - Mosaic Heatmap: mosaic_heatmap.md
+  - Spectral Reordering: spectral_permute.md
+  - RMS Permutation: rms_permute.md

@@ -18,10 +18,9 @@ _original_rcParams = mpl.rcParams.copy()
 __version__ = "0.1.0"
 
 __all__ = [
-    "_amc_postprocess",
+    "amc_postprocess",
     "mosaic_heatmap",
-    "_rms_permute",
-    "_spectral_permute",
-
+    "rms_permute",
+    "spectral_permute",
     "mask_zeros_from_gt",
 ]

@@ -1,0 +1,7 @@
+nav:
+  - 🏠 Home: index.md
+  - Install: install.md
+  - User Guide: user-guide
+  - API: api
+  - Examples: examples
+  - ...

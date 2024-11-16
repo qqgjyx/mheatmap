@@ -27,3 +27,5 @@ examples/*.png
 .venv/
 site/
 
+.DS_Store
+
