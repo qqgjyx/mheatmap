@@ -7,6 +7,15 @@ on:
 permissions:
   contents: write
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pip install mkdocs-material mkdocstrings-python mkdocs-awesome-pages-plugin
+      - name: Build and deploy
+        run: mkdocs build
   deploy:
     runs-on: ubuntu-latest
     steps:
