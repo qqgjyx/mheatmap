@@ -1,10 +1,9 @@
 site_name: mheatmap
+site_url: https://mheatmap.qqgjyx.com/
 theme:
   name: material
 
-
 plugins:
-  - search
   - mkdocstrings:
       handlers:
         python:
@@ -14,5 +13,5 @@ plugins:
             docstring_style: numpy
   - offline
   - search
-  - awesome-pages
   - tags
+  # - awesome-pages
