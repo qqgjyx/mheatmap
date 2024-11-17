@@ -309,9 +309,7 @@ class _RMSPermute:
             self.rms_label_map.items(),
             key=lambda x: (
                 x[1][1],  # Primary sort by type
-                (
-                    x[1][0] if x[1][1] == "rsplit" else x[0]
-                ),  # Secondary sort by pred for rmerge, gt for rsplit
+                x[1][0],  # Secondary sort by gt
             ),
         )
 
