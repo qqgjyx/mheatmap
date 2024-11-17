@@ -68,10 +68,10 @@ def _make_rms_map(conf_mat: np.ndarray, threshold: float = 0.37) -> dict:
             row_max = conf_mat[i, :].max()
             col_max = conf_mat[:, i].max()
 
-            if row_max > col_max:  # Merge case - row maximum dominates
+            if row_max > col_max:           # Merge case - row maximum dominates
                 j = np.argmax(conf_mat[i, :])
                 rms_map[i] = (j, "rmerge")
-            else:  # Split case - column maximum dominates
+            else:                           # Split case - column maximum dominates
                 j = np.argmax(conf_mat[:, i])
                 rms_map[i] = (j, "rsplit")
 
@@ -328,7 +328,7 @@ class _RMSPermute:
 
             if rel_type == "rmerge":
                 # GT1,GT2 -> PRED1,PRED1
-                rms_matrix[i] = [gt_label, pred_label, pred_label, pred_label]
+                rms_matrix[i] = [pred_label, gt_label, gt_label, gt_label]
             else:  # rsplit
                 # GT1,GT1 -> PRED1,PRED2
                 rms_matrix[i] = [gt_label, gt_label, gt_label, pred_label]
