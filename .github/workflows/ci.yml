@@ -31,8 +31,8 @@ jobs:
       #   run: pip install mkdocs-material mkdocstrings-python mkdocs-awesome-pages-plugin build
       # - name: Build the python package
       #   run: python -m build
-      - name: Pip install the python package
-        run: pip install dist/*.whl
+      # - name: Pip install the python package
+      #   run: pip install dist/*.whl
       - name: Build and deploy
         run: mkdocs build
       - run: mkdocs gh-deploy --force
