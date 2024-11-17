@@ -1,8 +1,8 @@
 # RMS Permutation Demo
+
 ---
 
 ## Importing Packages
-
 
 ```python
 import numpy as np
@@ -20,9 +20,8 @@ import warnings
 ## Load Data
 
 - Load the ground truth labels
-    - `Salinas_gt.mat`: Ground truth labels for [Salinas dataset](http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes)
+  - `Salinas_gt.mat`: Ground truth labels for [Salinas dataset](http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes)
 - Load the predicted labels from `spectral clustering`
-
 
 ```python
 # Load the data
@@ -41,9 +40,10 @@ print(f"y_true shape: {y_true.shape}")
 print(f"y_pred shape: {len(y_pred)}")
 ```
 
+```output
     y_true shape: (111104,)
     y_pred shape: 111104
-
+```
 
 ## AMC Post-processing
 
@@ -53,28 +53,26 @@ print(f"y_pred shape: {len(y_pred)}")
 
 See `AMC Post-processing` for more details.
 
-
 ```python
 # AMC post-processing
 _, conf_mat, labels = amc_postprocess(y_pred, y_true)
 ```
 
 ## RMS Permutation
-- Reverse Merge/Split Idea:
-    - Merge: $GT0, GT1 \rightarrow PRD0, PRD0$
-    - Split: $GT0, GT0 \rightarrow PRD0, PRD1$
-    - Which impact OA or AA metrics but not ARI (`resolution issue`)
 
+- Reverse Merge/Split Idea:
+  - Merge: $GT0, GT1 \rightarrow PRD0, PRD0$
+  - Split: $GT0, GT0 \rightarrow PRD0, PRD1$
+  - Which impact OA or AA metrics but not ARI (`resolution issue`)
 
 ```python
 # Demonstrate RMS permutation analysis
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=RuntimeWarning)
-    rms_C, rms_labels, _, _, _ = rms_permute(conf_mat, labels)
+    rms_C, rms_labels, _, rms_map_matrix, rms_map_type = rms_permute(conf_mat, labels)
 ```
 
 ## Visualize the results
-
 
 ```python
 # Visualize original vs RMS permuted matrices
@@ -95,8 +93,29 @@ plt.tight_layout()
 plt.show()
 ```
 
-
-    
 ![png](images/rms_permutation.png)
-    
 
+## RMS Matrix Visualization
+
+```python
+import seaborn as sns
+
+fig, ax = plt.subplots(figsize=(10, 10))
+sns.heatmap(
+    rms_map_matrix, 
+    annot=True, 
+    annot_kws={"size": 18},
+    cbar=False,
+    cmap="YlGnBu",
+    xticklabels=['GT1', 'GT2', 'PRED1', 'PRED2'],
+    yticklabels=rms_map_type
+)
+ax.set_title("RMS Matrix", fontsize=18, color='#4A4A4A')  # Medium gray
+ax.tick_params(colors='#4A4A4A', axis='both', which='major', labelsize=18)
+ax.axvline(x=2, color='black', linewidth=2)
+plt.tight_layout()
+plt.savefig("rms_matrix.png", dpi=300, transparent=True)
+plt.show()
+```
+
+![png](images/rms_matrix.png)
