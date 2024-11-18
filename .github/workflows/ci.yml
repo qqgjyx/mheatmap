@@ -28,7 +28,7 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - name: Install dependencies
-        run: pip install mkdocs-material mkdocstrings-python mkdocs-awesome-pages-plugin
+        run: pip install mkdocs-material mkdocstrings-python mkdocs-awesome-pages-plugin build
       - name: Build the python package
         run: python -m build
       - name: Pip install the python package
