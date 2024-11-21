@@ -19,7 +19,9 @@ import scipy
 ## Load Data
 
 - Load the ground truth labels
+
     - `Salinas_gt.mat`: Ground truth labels for [Salinas dataset](http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes)
+
 - Load the predicted labels from `spectral clustering`
 
 ```python
@@ -130,8 +132,39 @@ plt.tight_layout()
 plt.show()
 ```
 
-
-    
 ![png](images/spectral_permutation.png)
-    
 
+## Two-walk Spectral Permutation
+
+```python
+# Two-walk Laplacian
+reordered_mat, reordered_labels = spectral_permute(conf_mat, labels, mode='tw')
+```
+
+## Visualize the TW Results
+
+```python
+# Visualize original vs spectrally reordered matrices
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+
+mosaic_heatmap(conf_mat, ax=ax1, xticklabels=labels, yticklabels=labels, cmap="YlGnBu")
+ax1.set_title("Original", fontsize=18, color='#4A4A4A')  # Medium gray
+ax1.xaxis.set_ticks_position('top')
+ax1.tick_params(colors='#4A4A4A')
+
+mosaic_heatmap(
+    reordered_mat,
+    ax=ax2,
+    xticklabels=reordered_labels,
+    yticklabels=reordered_labels,
+    cmap="YlGnBu",
+)
+ax2.set_title("TW Spectral Reordered", fontsize=18, color='#4A4A4A')  # Medium gray
+ax2.xaxis.set_ticks_position('top')
+ax2.tick_params(colors='#4A4A4A')
+
+plt.tight_layout()
+plt.show()
+```
+
+![png](images/tws_permutation.png)
