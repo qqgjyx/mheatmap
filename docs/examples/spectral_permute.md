@@ -7,11 +7,15 @@
 ```python
 import numpy as np
 import pandas as pd
-from src.mheatmap import (
-    amc_postprocess, 
-    spectral_permute, 
+from mheatmap import (
+    amc_postprocess,  
     mosaic_heatmap
 )
+from mheatmap.graph import spectral_permute
+from mheatmap.constants import set_test_mode
+
+set_test_mode(True)
+
 import matplotlib.pyplot as plt
 import scipy
 ```
@@ -106,6 +110,10 @@ $$
 reordered_mat, reordered_labels = spectral_permute(conf_mat, labels)
 ```
 
+![png](images/fied_eigenvalue.png)
+![png](images/fied_eigenvector.png)
+![png](images/fied_graph.png)
+
 ## Visualize the Results
 
 ```python
@@ -140,6 +148,10 @@ plt.show()
 # Two-walk Laplacian
 reordered_mat, reordered_labels = spectral_permute(conf_mat, labels, mode='tw')
 ```
+
+![png](images/tw_eigenvalue.png)
+![png](images/tw_eigenvector.png)
+![png](images/tw_graph.png)
 
 ## Visualize the TW Results
 

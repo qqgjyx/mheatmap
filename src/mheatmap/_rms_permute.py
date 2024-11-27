@@ -68,10 +68,10 @@ def _make_rms_map(conf_mat: np.ndarray, threshold: float = 0.37) -> dict:
             row_max = conf_mat[i, :].max()
             col_max = conf_mat[:, i].max()
 
-            if row_max > col_max:           # Merge case - row maximum dominates
+            if row_max > col_max:  # Merge case - row maximum dominates
                 j = np.argmax(conf_mat[i, :])
                 rms_map[i] = (j, "rmerge")
-            else:                           # Split case - column maximum dominates
+            else:  # Split case - column maximum dominates
                 j = np.argmax(conf_mat[:, i])
                 rms_map[i] = (j, "rsplit")
 

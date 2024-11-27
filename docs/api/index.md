@@ -11,5 +11,10 @@
 | Module | Description |
 |--------|-------------|
 | [`amc_postprocess`](amc-postprocess.md) | Post-process confusion matrices using the Automatic Model Calibration (AMC) algorithm |
-| [`spectral_permute`](spectral-permute.md) | Reorder matrices using spectral analysis of the graph Laplacian |
 | [`rms_permute`](rms-permute.md) | Analyze matrix structures using Reverse Merge/Split permutation analysis |
+
+## Graph
+
+| Module | Description |
+|--------|-------------|
+| [`graph`](graph.md) | Graph-based permutation |
