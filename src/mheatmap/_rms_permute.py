@@ -172,9 +172,11 @@ def _permute_labels(labels: np.ndarray, P: np.ndarray) -> np.ndarray:
     Returns
     -------
     np.ndarray
-        The permuted labels array P @ labels
+        The permuted labels array
     """
-    return P @ labels
+    # Convert permutation matrix to indices
+    perm_indices = np.where(P)[1]
+    return labels[perm_indices]
 
 
 def _make_rms_label_map(labels: np.ndarray, rms_map: dict) -> dict:
@@ -331,7 +333,7 @@ class _RMSPermute:
                 # GT1,GT1 -> PRED1,PRED2
                 rms_matrix[i] = [gt_label, gt_label, gt_label, pred_label]
 
-        return np.array(rms_matrix, dtype=np.int_), relationship_types
+        return rms_matrix, relationship_types
 
 
 def rms_permute(confusion_matrix: np.ndarray, labels: np.ndarray) -> tuple:

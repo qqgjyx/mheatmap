@@ -13,18 +13,24 @@ class TestRMSPermute:
         labels = np.array(['A', 'B', 'C'])
         
         # Call the function
-        reordered_matrix, reordered_labels = rms_permute(matrix, labels)
+        permuted_matrix, permuted_labels, rms_label_map, rms_map_matrix, rms_map_type = rms_permute(matrix, labels)
         
-        # Check that the results are numpy arrays
-        assert isinstance(reordered_matrix, np.ndarray)
-        assert isinstance(reordered_labels, np.ndarray)
+        # Check that we got the expected return values
+        assert isinstance(permuted_matrix, np.ndarray)
+        assert isinstance(permuted_labels, np.ndarray)
+        assert isinstance(rms_label_map, dict)
+        assert isinstance(rms_map_matrix, np.ndarray)
+        assert isinstance(rms_map_type, np.ndarray)
         
         # Check that the shape is preserved
-        assert reordered_matrix.shape == matrix.shape
-        assert len(reordered_labels) == len(labels)
+        assert permuted_matrix.shape == matrix.shape
+        assert len(permuted_labels) == len(labels)
         
         # Check that the labels are a permutation of the original labels
-        assert set(reordered_labels) == set(labels)
+        assert set(permuted_labels) == set(labels)
+        
+        # Check that the matrix is still symmetric
+        assert np.allclose(permuted_matrix, permuted_matrix.T)
     
     def test_with_symmetric_matrix(self):
         """Test rms_permute with a symmetric matrix."""
@@ -38,21 +44,24 @@ class TestRMSPermute:
         labels = np.array(['A', 'B', 'C', 'D'])
         
         # Call the function
-        reordered_matrix, reordered_labels = rms_permute(matrix, labels)
+        permuted_matrix, permuted_labels, rms_label_map, rms_map_matrix, rms_map_type = rms_permute(matrix, labels)
         
-        # Check that the results are numpy arrays
-        assert isinstance(reordered_matrix, np.ndarray)
-        assert isinstance(reordered_labels, np.ndarray)
+        # Check that we got the expected return values
+        assert isinstance(permuted_matrix, np.ndarray)
+        assert isinstance(permuted_labels, np.ndarray)
+        assert isinstance(rms_label_map, dict)
+        assert isinstance(rms_map_matrix, np.ndarray)
+        assert isinstance(rms_map_type, np.ndarray)
         
         # Check that the shape is preserved
-        assert reordered_matrix.shape == matrix.shape
-        assert len(reordered_labels) == len(labels)
+        assert permuted_matrix.shape == matrix.shape
+        assert len(permuted_labels) == len(labels)
         
         # Check that the labels are a permutation of the original labels
-        assert set(reordered_labels) == set(labels)
+        assert set(permuted_labels) == set(labels)
         
         # Check that the matrix is still symmetric
-        assert np.allclose(reordered_matrix, reordered_matrix.T)
+        assert np.allclose(permuted_matrix, permuted_matrix.T)
     
     def test_with_large_matrix(self):
         """Test rms_permute with a larger matrix."""
@@ -63,35 +72,47 @@ class TestRMSPermute:
         labels = np.array([f'Class_{i}' for i in range(10)])
         
         # Call the function
-        reordered_matrix, reordered_labels = rms_permute(matrix, labels)
+        permuted_matrix, permuted_labels, rms_label_map, rms_map_matrix, rms_map_type = rms_permute(matrix, labels)
         
-        # Check that the results are numpy arrays
-        assert isinstance(reordered_matrix, np.ndarray)
-        assert isinstance(reordered_labels, np.ndarray)
+        # Check that we got the expected return values
+        assert isinstance(permuted_matrix, np.ndarray)
+        assert isinstance(permuted_labels, np.ndarray)
+        assert isinstance(rms_label_map, dict)
+        assert isinstance(rms_map_matrix, np.ndarray)
+        assert isinstance(rms_map_type, np.ndarray)
         
         # Check that the shape is preserved
-        assert reordered_matrix.shape == matrix.shape
-        assert len(reordered_labels) == len(labels)
+        assert permuted_matrix.shape == matrix.shape
+        assert len(permuted_labels) == len(labels)
         
         # Check that the labels are a permutation of the original labels
-        assert set(reordered_labels) == set(labels)
+        assert set(permuted_labels) == set(labels)
         
         # Check that the matrix is still symmetric
-        assert np.allclose(reordered_matrix, reordered_matrix.T)
+        assert np.allclose(permuted_matrix, permuted_matrix.T)
     
     def test_with_parameters(self):
         """Test rms_permute with different parameters."""
         # Create a simple 3x3 matrix
         matrix = np.array([[1, 0.5, 0.2], [0.5, 1, 0.7], [0.2, 0.7, 1]])
+        labels = np.array(['A', 'B', 'C'])
         
-        # Call the function with different parameters
-        result1 = rms_permute(matrix, max_iter=10)
-        result2 = rms_permute(matrix, tol=1e-4)
+        # Call the function
+        permuted_matrix, permuted_labels, rms_label_map, rms_map_matrix, rms_map_type = rms_permute(matrix, labels)
         
-        # Check that both results are numpy arrays
-        assert isinstance(result1, np.ndarray)
-        assert isinstance(result2, np.ndarray)
+        # Check that we got the expected number of return values
+        assert isinstance(permuted_matrix, np.ndarray)
+        assert isinstance(permuted_labels, np.ndarray)
+        assert isinstance(rms_label_map, dict)
+        assert isinstance(rms_map_matrix, np.ndarray)
+        assert isinstance(rms_map_type, np.ndarray)
         
-        # Check that both shapes are preserved
-        assert result1.shape == matrix.shape
-        assert result2.shape == matrix.shape 
+        # Check that the shape is preserved
+        assert permuted_matrix.shape == matrix.shape
+        assert len(permuted_labels) == len(labels)
+        
+        # Check that the labels are a permutation of the original labels
+        assert set(permuted_labels) == set(labels)
+        
+        # Check that the matrix is still symmetric
+        assert np.allclose(permuted_matrix, permuted_matrix.T) 

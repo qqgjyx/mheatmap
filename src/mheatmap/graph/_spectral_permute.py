@@ -222,11 +222,21 @@ def _put_zero_rows_cols_tail(
     nonzero_rows = np.setdiff1d(np.arange(B.shape[0]), zero_rows)
     nonzero_cols = np.setdiff1d(np.arange(B.shape[1]), zero_cols)
 
-    # Reorder matrix by concatenating significant and negligible sections
-    B = np.concatenate([B[nonzero_rows], B[zero_rows]], axis=0)
-    B = np.concatenate([B[:, nonzero_cols], B[:, zero_cols]], axis=1)
-
-    # Reorder labels to maintain correspondence with matrix rows
-    labels = np.concatenate([labels[nonzero_rows], labels[zero_rows]])
-
-    return B, labels
+    # Handle edge cases where all rows/columns might be zero or non-zero
+    if len(nonzero_rows) == 0:
+        reordered_B = B.copy()
+        reordered_labels = labels.copy() if labels is not None else None
+    elif len(zero_rows) == 0:
+        reordered_B = B.copy()
+        reordered_labels = labels.copy() if labels is not None else None
+    else:
+        # Reorder matrix by concatenating significant and negligible sections
+        reordered_B = np.concatenate([B[nonzero_rows], B[zero_rows]], axis=0)
+        reordered_B = np.concatenate([reordered_B[:, nonzero_cols], reordered_B[:, zero_cols]], axis=1)
+        
+        # Reorder labels to maintain correspondence with matrix rows
+        reordered_labels = labels[nonzero_rows] if labels is not None else None
+        if reordered_labels is not None and len(zero_rows) > 0:
+            reordered_labels = np.concatenate([reordered_labels, labels[zero_rows]])
+    
+    return reordered_B, reordered_labels

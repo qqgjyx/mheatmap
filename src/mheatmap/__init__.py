@@ -29,7 +29,7 @@ import matplotlib as mpl
 _original_rcParams = mpl.rcParams.copy()
 
 # Package version
-__version__ = "1.2.4"
+__version__ = "1.2.5"
 
 # Public API
 __all__ = [

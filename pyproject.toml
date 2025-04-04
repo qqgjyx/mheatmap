@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mheatmap"
-version = "1.2.4"
+version = "1.2.5"
 description = "A package for mosaic/proportional heatmap visualization and matrix analysis"
 readme = "README.md"
 authors = [

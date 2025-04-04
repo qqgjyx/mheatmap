@@ -31,10 +31,12 @@ class TestPostProcessFunctions:
         gt = np.array([2, 3, 1, 2, 3, 1])
         
         # Call the function
-        aligned_pred = amc_postprocess(pred, gt)
+        aligned_pred, conf_matrix, unique_labels = amc_postprocess(pred, gt)
         
-        # Check that we got a numpy array back
+        # Check that we got numpy arrays back
         assert isinstance(aligned_pred, np.ndarray)
+        assert isinstance(conf_matrix, np.ndarray)
+        assert isinstance(unique_labels, np.ndarray)
         
         # Check that the shape is preserved
         assert aligned_pred.shape == pred.shape
