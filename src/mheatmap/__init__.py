@@ -8,6 +8,8 @@ Key Features:
 - Mosaic/proportional heatmap visualization
 - Confusion matrix post-processing and analysis
 - Graph-based and RMS-based matrix permutation algorithms
+
+Author: Juntang Wang @ Duke University
 """
 
 # Core visualization
@@ -21,6 +23,11 @@ from ._amc_postprocess import (
 
 # Matrix permutation
 from ._rms_permute import rms_permute
+from .graph import (
+    copermute_from_bipermute,
+    spectral_permute,
+    two_walk_laplacian,
+)
 
 # Store original matplotlib configuration
 import matplotlib as mpl
@@ -43,4 +50,7 @@ __all__ = modules + [
     "mask_zeros_from_gt",
     "amc_postprocess",
     "rms_permute",
+    "copermute_from_bipermute",
+    "spectral_permute",
+    "two_walk_laplacian",
 ]
