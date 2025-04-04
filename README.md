@@ -5,7 +5,7 @@
 
 A Python package for advanced heatmap visualization and matrix analysis,
 featuring mosaic/proportional heatmaps, confusion matrix post-processing,
-and spectral reordering capabilities. 
+and spectral reordering capabilities.
 
 ---
 

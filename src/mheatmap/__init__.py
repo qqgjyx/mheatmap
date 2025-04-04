@@ -16,36 +16,23 @@ Author: Juntang Wang @ Duke University
 from .matrix import mosaic_heatmap
 
 # Post-processing utilities
-from ._amc_postprocess import (
-    amc_postprocess,
-    mask_zeros_from_gt,
-)
+from ._amc_postprocess import amc_postprocess, mask_zeros_from_gt
 
 # Matrix permutation
 from ._rms_permute import rms_permute
-from .graph import (
-    copermute_from_bipermute,
-    spectral_permute,
-    two_walk_laplacian,
-)
+
+# Graph-based algorithms
+from .graph import copermute_from_bipermute, spectral_permute, two_walk_laplacian
 
 # Store original matplotlib configuration
 import matplotlib as mpl
-
 _original_rcParams = mpl.rcParams.copy()
 
 # Package version
-__version__ = "1.2.1"
-
-# Submodules
-modules = [
-    "graph",  # Graph-based algorithms
-    "utils",  # Utility functions
-    "constants",  # Package constants
-]
+__version__ = "1.2.4"
 
 # Public API
-__all__ = modules + [
+__all__ = [
     "mosaic_heatmap",
     "mask_zeros_from_gt",
     "amc_postprocess",

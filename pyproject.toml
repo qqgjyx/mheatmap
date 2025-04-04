@@ -1,3 +1,39 @@
 [build-system]
 requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta" 
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mheatmap"
+version = "1.2.4"
+description = "A package for mosaic/proportional heatmap visualization and matrix analysis"
+readme = "README.md"
+authors = [
+    {name = "Juntang Wang", email = "jw853@duke.edu"}
+]
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "scipy",
+    "scikit-learn",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/qqgjyx/mheatmap"
+"Bug Tracker" = "https://github.com/qqgjyx/mheatmap/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["mheatmap", "mheatmap.graph", "mheatmap.utils"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+] 
