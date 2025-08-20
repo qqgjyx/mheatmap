@@ -45,8 +45,8 @@ def plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1):
     .. versionadded:: 1.1.0
     """
     # Configure plot style
-    plt.style.use("seaborn-v0_8")
-    plt.rcParams["figure.facecolor"] = "#f0f0f0"
+    # plt.style.use("seaborn-v0_8")
+    # plt.rcParams["figure.facecolor"] = "#f0f0f0"
 
     total_weight = np.sum(reordered_cm)
     n_classes = len(reordered_labels)
@@ -88,10 +88,8 @@ def plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1):
     }
 
     # Configure plot layout
-    plt.figure(figsize=(15, 10))
-    plt.title(
-        "Confusion Matrix Bipartite Graph", fontsize=16, pad=20, fontweight="bold"
-    )
+    plt.figure(figsize=(5,4))
+    plt.title("Confusion Matrix Bipartite Graph")
     plt.axis("off")
 
     # Create bipartite layout
@@ -141,16 +139,14 @@ def plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1):
 
     # Add edge percentage labels
     edge_labels = {edges[i]: f"{edge_percentages[i]:.1f}%" for i in range(len(edges))}
-    nx.draw_networkx_edge_labels(
-        graph, pos, edge_labels=edge_labels, font_size=12, font_weight="bold"
-    )
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
 
     # Add node labels
     labels = {}
     for i in range(n_classes):
         labels[gt_nodes[i]] = str(reordered_labels[i])
         labels[pred_nodes[i]] = str(reordered_labels[i])
-    nx.draw_networkx_labels(graph, pos, labels, font_size=14)
+    nx.draw_networkx_labels(graph, pos, labels)
 
     plt.tight_layout()
     plt.show()

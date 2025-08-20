@@ -27,7 +27,7 @@ def plot_eigen(eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> None:
         Displays the plots using matplotlib
     """
     # Plot eigenvalues
-    plt.figure(figsize=(8, 4))
+    plt.figure(figsize=(5,4))
     colors = ["red" if ev <= 0 else "blue" for ev in eigenvalues]
     plt.gca().set_yscale("log")
     plt.scatter(np.arange(len(eigenvalues)), np.abs(eigenvalues), c=colors, alpha=0.6)
@@ -38,7 +38,7 @@ def plot_eigen(eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> None:
     plt.show()
 
     # Plot eigenvectors as heatmap
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(5,4))
     sns.heatmap(
         eigenvectors,
         cmap="YlGnBu",
