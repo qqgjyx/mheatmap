@@ -11,9 +11,7 @@ which captures both direct connections and two-step walks in the graph structure
 import numpy as np
 
 
-def two_walk_laplacian(
-    B_sub: np.ndarray, alpha: float = 1
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def two_walk_laplacian(B_sub: np.ndarray, alpha: float = 1) -> np.ndarray:
     """`two_walk_laplacia(B_sub, alpha=1)`
 
     Compute the two-walk Laplacian matrix of a bipartite graph.
@@ -35,10 +33,6 @@ def two_walk_laplacian(
     -------
     L_tw : np.ndarray
         Two-walk Laplacian matrix of shape (m+n, m+n)
-    Bsub_rows : np.ndarray
-        Indices of non-zero rows in the input matrix
-    Bsub_cols : np.ndarray
-        Indices of non-zero columns in the input matrix
 
     Notes
     -----
@@ -61,7 +55,7 @@ def two_walk_laplacian(
     Examples
     --------
     >>> B = np.array([[1, 0], [1, 1]])
-    >>> L_tw, rows, cols = two_walk_laplacian(B)
+    >>> L_tw = two_walk_laplacian(B)
     >>> print(L_tw.shape)
     (4, 4)
     """

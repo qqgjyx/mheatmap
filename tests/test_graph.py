@@ -74,3 +74,25 @@ class TestGraphFunctions:
         # Check that the off-diagonal elements are non-positive
         off_diag = L_tw - np.diag(np.diag(L_tw))
         assert np.all(off_diag <= 0)
+
+    def test_spectral_permute_with_isolated_vertices(self):
+        """Test spectral_permute with a matrix that has zero rows/cols."""
+        matrix = np.array(
+            [
+                [5, 2, 0],
+                [2, 3, 0],
+                [0, 0, 0],
+            ]
+        )
+        labels = np.array(["A", "B", "C"])
+
+        reordered_B, reordered_labels = spectral_permute(matrix, labels)
+        assert reordered_B.shape == matrix.shape
+        assert len(reordered_labels) == len(labels)
+
+    def test_two_walk_laplacian_1x1(self):
+        """Test two_walk_laplacian with a 1x1 matrix."""
+        B = np.array([[3]])
+        L_tw = two_walk_laplacian(B)
+        assert L_tw.shape == (2, 2)
+        assert np.allclose(L_tw, L_tw.T)

@@ -22,21 +22,22 @@ def copermute_from_bipermute(
     Parameters
     ----------
     B_sizes : array_like
-        A 1x2 array containing the dimensions of matrix B: [nrows, ncols]
+        Array of shape (2,) containing [nrows, ncols] of matrix B
     B_subrows : array_like
-        Row indices defining the submatrix Bsub, nrBsub x 1
-        integer array where nrBsub <= nrB
+        Integer array of shape (nrBsub,) with row indices
+        defining the submatrix Bsub, where nrBsub <= nrows
     B_subcols : array_like
-        Column indices defining the submatrix Bsub, ncBsub x 1
-        integer array where ncBsub <= ncB
+        Integer array of shape (ncBsub,) with column indices
+        defining the submatrix Bsub, where ncBsub <= ncols
     p_Asub : array_like
-        Permutation vector for the symmetric embedding of Bsub, (nr+nc)x1 integer array
+        Integer array of shape (nrBsub + ncBsub,) with
+        permutation for the symmetric embedding of Bsub
 
     Returns
     -------
     tuple
-        - p_Brows : Row permutation vector for matrix B, Bsizes[0]x1
-        - p_Bcols : Column permutation vector for matrix B, Bsizes[1]x1
+        - p_Brows : Row permutation, integer array of shape (nrows,)
+        - p_Bcols : Column permutation, integer array of shape (ncols,)
 
     Examples
     --------

@@ -7,7 +7,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from seaborn import despine
-from seaborn.matrix import _HeatMapper
 from seaborn.utils import axis_ticklabels_overlap
 
 ###############################################################################
@@ -38,13 +37,15 @@ def _get_mh_xyc(
     x_centers = (x_edges[:-1] + x_edges[1:]) / 2
     y_centers = (y_edges[:-1] + y_edges[1:]) / 2
 
-    # Xc, Yc = np.meshgrid(x_centers, y_centers)
     return x_edges, y_edges, x_centers, y_centers
 
 
-# Override the _HeatMapper class
-class _MosaicHeatMapper(_HeatMapper):
-    """Draw a mosaic heatmap plot of a matrix with nice labels and colormaps."""
+class _MosaicHeatMapper:
+    """Prepare and plot mosaic heatmap data.
+
+    Handles data normalization, tick label processing, colormap setup,
+    and rendering — without depending on seaborn's private _HeatMapper.
+    """
 
     def __init__(
         self,
@@ -63,23 +64,70 @@ class _MosaicHeatMapper(_HeatMapper):
         yticklabels=True,
         mask=None,
     ):
-        # Initialize the _HeatMapper class
-        super().__init__(
-            data,
-            vmin,
-            vmax,
-            cmap,
-            center,
-            robust,
-            annot,
-            fmt,
-            annot_kws,
-            cbar,
-            cbar_kws,
-            xticklabels,
-            yticklabels,
-            mask,
-        )
+        # Convert data to ndarray (handle DataFrame)
+        if hasattr(data, "values"):
+            plot_data = data.values
+        else:
+            plot_data = np.asarray(data)
+
+        # Handle mask
+        if mask is not None:
+            mask = np.asarray(mask, dtype=bool)
+            plot_data = np.ma.masked_where(mask, plot_data)
+
+        self.data = plot_data
+        self.plot_data = plot_data.astype(float)
+
+        # Handle tick labels from DataFrame
+        if hasattr(data, "index") and hasattr(data, "columns"):
+            if xticklabels is True or xticklabels == "auto":
+                xticklabels = list(data.columns)
+            if yticklabels is True or yticklabels == "auto":
+                yticklabels = list(data.index)
+            self.xlabel = data.columns.name or ""
+            self.ylabel = data.index.name or ""
+        else:
+            if xticklabels is True or xticklabels == "auto":
+                xticklabels = list(range(plot_data.shape[1]))
+            if yticklabels is True or yticklabels == "auto":
+                yticklabels = list(range(plot_data.shape[0]))
+            self.xlabel = ""
+            self.ylabel = ""
+
+        if xticklabels is False:
+            xticklabels = []
+        if yticklabels is False:
+            yticklabels = []
+
+        self.xticklabels = xticklabels
+        self.yticklabels = yticklabels
+
+        # Colormap
+        if cmap is None:
+            cmap = "rocket" if center is None else "icefire"
+        self.cmap = cmap
+
+        # Value range
+        if robust and vmin is None:
+            vmin = np.nanpercentile(plot_data, 2)
+        if robust and vmax is None:
+            vmax = np.nanpercentile(plot_data, 98)
+        self.vmin = vmin if vmin is not None else np.nanmin(plot_data)
+        self.vmax = vmax if vmax is not None else np.nanmax(plot_data)
+
+        if center is not None:
+            max_diff = max(abs(self.vmax - center), abs(self.vmin - center))
+            self.vmin = center - max_diff
+            self.vmax = center + max_diff
+
+        # Annotation
+        self.annot = annot
+        self.fmt = fmt
+        self.annot_kws = annot_kws or {}
+
+        # Colorbar
+        self.cbar = cbar
+        self.cbar_kws = cbar_kws or {}
 
     def _annotate_mosaic_heatmap(self, ax):
         for i in range(self.data.shape[0]):
@@ -137,10 +185,6 @@ class _MosaicHeatMapper(_HeatMapper):
         ax.set(xticks=xticks, yticks=yticks)
         xtl = ax.set_xticklabels(xticklabels)
         ytl = ax.set_yticklabels(yticklabels, rotation="vertical")
-        # plt.setp(ytl, va="center")  # GH2484
-
-        # # Possibly rotate them if they overlap
-        # _draw_figure(ax.figure)
 
         if axis_ticklabels_overlap(xtl):
             plt.setp(xtl, rotation="vertical")
@@ -166,8 +210,6 @@ def mosaic_heatmap(
     annot=None,
     fmt=".2g",
     annot_kws=None,
-    linewidths=0,
-    linecolor="white",
     cbar=True,
     cbar_kws=None,
     cbar_ax=None,
@@ -182,61 +224,46 @@ def mosaic_heatmap(
 
     Plot mosaic data as a color-encoded matrix.
 
-    Creates a mosaic heatmap where the column widths and row heights are proportional
-    to the marginal sums of the data matrix. This provides a visualization that
-    encodes both the cell values through color and the marginal distributions
-    through cell sizes.
+    Creates a mosaic heatmap where the column widths and row
+    heights are proportional to the marginal sums of the data
+    matrix.
 
     Parameters
     ----------
     data : array-like
-        2D dataset that can be coerced into an ndarray. If a pandas DataFrame
-        is provided, the index/column information will be used to label the
-        columns and rows.
+        2D dataset that can be coerced into an ndarray. If a
+        pandas DataFrame is provided, the index/column information
+        will be used to label the columns and rows.
     vmin, vmax : float, optional
-        Values to anchor the colormap. If not provided, they are inferred from the
-        data and other keyword arguments.
+        Values to anchor the colormap.
     cmap : str or matplotlib.colors.Colormap, optional
-        The mapping from data values to color space. If not provided, the
-        default depends on whether ``center`` is set.
+        The mapping from data values to color space.
     center : float, optional
         The value at which to center the colormap for divergent data.
-        Changes the default ``cmap`` if none is specified.
     robust : bool, optional
-        If True and ``vmin`` or ``vmax`` are absent, compute colormap range using
-        robust quantiles instead of extreme values.
+        If True, compute colormap range using robust quantiles.
     annot : bool or array-like, optional
-        If True, write the data value in each cell. If array-like with same shape
-        as ``data``, use this for annotation instead of the data. DataFrames match
-        on position, not index.
+        If True, write the data value in each cell.
     fmt : str, optional
         String formatting code for annotation values. Default: '.2g'
     annot_kws : dict, optional
-        Keyword arguments for matplotlib.axes.Axes.text when ``annot`` is True.
-    linewidths : float, optional
-        Width of cell divider lines. Default: 0
-    linecolor : color, optional
-        Color of cell divider lines. Default: 'white'
+        Keyword arguments for annotation text.
     cbar : bool, optional
         Whether to draw a colorbar. Default: True
     cbar_kws : dict, optional
-        Keyword arguments for matplotlib.figure.Figure.colorbar.
+        Keyword arguments for colorbar.
     cbar_ax : matplotlib.axes.Axes, optional
-        Axes in which to draw the colorbar. If None, takes space from main Axes.
+        Axes in which to draw the colorbar.
     square : bool, optional
-        If True, set aspect ratio to "equal" for square cells. Default: False
-    xticklabels, yticklabels : 'auto', bool, array-like, or int, optional
-        - True: plot column/row names
-        - False: don't plot labels
-        - array-like: plot custom labels
-        - int: plot every nth label
-        - 'auto': plot non-overlapping labels
+        If True, set aspect ratio to "equal". Default: False
+    xticklabels, yticklabels : 'auto', bool, array-like, optional
+        Tick label specification.
     mask : bool array or DataFrame, optional
-        If True in a cell, data is not shown. Missing values are auto-masked.
+        If True in a cell, data is not shown.
     ax : matplotlib.axes.Axes, optional
         Axes in which to draw the plot. Uses current axes if None.
     **kwargs : dict
-        Additional keyword arguments passed to matplotlib.axes.Axes.pcolormesh.
+        Additional keyword arguments passed to pcolormesh.
 
     Returns
     -------
@@ -246,27 +273,10 @@ def mosaic_heatmap(
     Examples
     --------
     >>> import numpy as np
-    >>> import matplotlib.pyplot as plt
     >>> from mheatmap import mosaic_heatmap
-    >>>
-    >>> # Generate sample confusion matrix data
     >>> data = np.array([[10, 2, 0], [1, 8, 3], [0, 1, 12]])
-    >>>
-    >>> # Create mosaic heatmap with annotations
-    >>> fig, ax = plt.subplots(figsize=(8, 6))
-    >>> mosaic_heatmap(data, annot=True, cmap='YlOrRd', fmt='d',
-    ...               xticklabels=['A', 'B', 'C'],
-    ...               yticklabels=['A', 'B', 'C'])
-    >>> plt.title('Mosaic Confusion Matrix')
-    >>> plt.show()
-
-    Notes
-    -----
-    The mosaic heatmap is particularly useful for confusion matrices and contingency
-    tables where the marginal distributions provide additional context beyond the
-    cell values themselves.
+    >>> ax = mosaic_heatmap(data, annot=True, cmap='YlOrRd')
     """
-    # Initialize the _MosaicHeatMapper class
     plotter = _MosaicHeatMapper(
         data,
         vmin,
@@ -284,11 +294,6 @@ def mosaic_heatmap(
         mask,
     )
 
-    # Add the linewidths and linecolor kwargs
-    # kwargs["linewidths"] = linewidths
-    # kwargs["linecolor"] = linecolor
-
-    # Draw the plot and return the Axes
     if ax is None:
         ax = plt.gca()
     if square:

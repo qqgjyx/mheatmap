@@ -4,10 +4,7 @@ import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from ._base import test_decorator
 
-
-@test_decorator
 def plot_eigen(eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> None:
     """Plot eigenvalues and eigenvectors of a matrix.
 

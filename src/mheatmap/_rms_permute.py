@@ -18,7 +18,13 @@ This script is used to permute the confusion matrix based on merge split idea.
 # Code inspired by: Dimitris, 2024
 # Code modified by: Juntang Wang, 2024
 
+from typing import NamedTuple
+
 import numpy as np
+
+# Default precision/recall threshold for identifying weak classifications.
+# Below this threshold, a class is considered a candidate for merge/split grouping.
+_DEFAULT_THRESHOLD = 0.37
 
 ###############################################################################
 #                                                                             #
@@ -27,7 +33,7 @@ import numpy as np
 ###############################################################################
 
 
-def _make_rms_map(conf_mat: np.ndarray, threshold: float = 0.37) -> dict:
+def _make_rms_map(conf_mat: np.ndarray, threshold: float = _DEFAULT_THRESHOLD) -> dict:
     """
     Generates a reverse merge/split mapping based on confusion matrix analysis.
 
@@ -213,139 +219,50 @@ def _make_rms_label_map(labels: np.ndarray, rms_map: dict) -> dict:
 #                         RMS Permutation                                     #
 #                                                                             #
 ###############################################################################
-class _RMSPermute:
-    def __init__(
-        self, conf_mat: np.ndarray, labels: np.ndarray, threshold: float = 0.37
-    ):
-        """
-        Initialize RMSPermute to analyze and permute confusion matrices.
-
-        A wrapper class that provides functionality for analyzing confusion matrices
-        to identify merge/split relationships between classes and perform permutations
-        based on those relationships.
-
-        Parameters
-        ----------
-        conf_mat : np.ndarray
-            The confusion matrix to analyze
-        labels : np.ndarray
-            Array of class labels corresponding to matrix indices
-        threshold : float, optional
-            Threshold ratio for identifying negligible diagonal elements,
-            by default 1e-4
-        """
-        self.conf_mat = conf_mat
-        self.labels = labels
-        self.threshold = threshold
-        self.n = len(conf_mat)
-
-        # Compute mappings and permutation matrix
-        self.rms_map = _make_rms_map(conf_mat, threshold)
-        self.P = _make_rms_p(self.rms_map, self.n)
-        self.rms_label_map = _make_rms_label_map(labels, self.rms_map)
-
-    def get_permuted_matrix(self) -> np.ndarray:
-        """
-        Get the permuted confusion matrix.
-
-        Returns
-        -------
-        np.ndarray
-            The permuted confusion matrix
-        """
-        return _permute_matrix(self.conf_mat, self.P)
-
-    def get_permuted_labels(self) -> np.ndarray:
-        """
-        Get the permuted class labels.
-
-        Returns
-        -------
-        np.ndarray
-            The permuted labels array
-        """
-        return _permute_labels(self.labels, self.P)
-
-    def get_rms_mapping(self) -> dict:
-        """
-        Get the merge/split relationships between classes.
-
-        Returns
-        -------
-        dict
-            Dictionary mapping source labels to (target label, merge type) tuples
-        """
-        return self.rms_label_map
-
-    def get_rms_map_matrix(self) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Generates a matrix representation of the merge/split relationships
-        between classes.
-
-        Returns
-        -------
-        tuple[np.ndarray, np.ndarray]
-            A tuple containing:
-            1. An Nx4 matrix where N is the number of source labels:
-               - Column 0: GT1
-               - Column 1: GT2
-               - Column 2: PRED1
-               - Column 3: PRED2
-               The matrix is sorted primarily by relationship type, then:
-               - For rmerge: sorted by predicted labels
-               - For rsplit: sorted by ground truth labels
-            2. An array of relationship types ('rmerge' or 'rsplit')
-
-        Notes
-        -----
-        Relationship types indicate:
-        - 'rmerge': Multiple GT labels map to same PRED label
-        (e.g., GT1,GT2 -> PRED1,PRED1)
-        - 'rsplit': Single GT label maps to multiple PRED labels
-        (e.g., GT1,GT1 -> PRED1,PRED2)
-        """
-        # Sort relationships by type first,
-        # then by pred label for rmerge or gt label for rsplit
-        sorted_relationships = sorted(
-            self.rms_label_map.items(),
-            key=lambda x: (
-                x[1][1],  # Primary sort by type
-                x[1][0],  # Secondary sort by gt
-            ),
-        )
-
-        # Initialize output arrays
-        n_relationships = len(sorted_relationships)
-        rms_matrix = np.zeros((n_relationships, 4), dtype=object)
-        relationship_types = np.array(
-            ["" for _ in range(n_relationships)], dtype=object
-        )
-
-        # Fill arrays
-        for i, (pred_label, (gt_label, rel_type)) in enumerate(sorted_relationships):
-            relationship_types[i] = rel_type
-
-            if rel_type == "rmerge":
-                # GT1,GT2 -> PRED1,PRED1
-                rms_matrix[i] = [pred_label, gt_label, gt_label, gt_label]
-            else:  # rsplit
-                # GT1,GT1 -> PRED1,PRED2
-                rms_matrix[i] = [gt_label, gt_label, gt_label, pred_label]
-
-        return rms_matrix, relationship_types
 
 
-def rms_permute(confusion_matrix: np.ndarray, labels: np.ndarray) -> tuple:
+def _compute_rms_map_matrix(
+    rms_label_map: dict,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Build matrix representation of merge/split relationships."""
+    sorted_rels = sorted(
+        rms_label_map.items(),
+        key=lambda x: (x[1][1], x[1][0]),
+    )
+
+    n = len(sorted_rels)
+    rms_matrix = np.zeros((n, 4), dtype=object)
+    rel_types = np.array(["" for _ in range(n)], dtype=object)
+
+    for i, (pred_label, (gt_label, rel_type)) in enumerate(sorted_rels):
+        rel_types[i] = rel_type
+        if rel_type == "rmerge":
+            rms_matrix[i] = [pred_label, gt_label, gt_label, gt_label]
+        else:
+            rms_matrix[i] = [gt_label, gt_label, gt_label, pred_label]
+
+    return rms_matrix, rel_types
+
+
+class RMSResult(NamedTuple):
+    """Result of RMS permutation analysis."""
+
+    permuted_matrix: np.ndarray
+    permuted_labels: np.ndarray
+    rms_label_map: dict
+    rms_map_matrix: np.ndarray
+    rms_map_type: np.ndarray
+
+
+def rms_permute(confusion_matrix: np.ndarray, labels: np.ndarray) -> RMSResult:
     """`rms_permute(confusion_matrix, labels)`
 
-    Perform reverse merge/split (RMS) permutation analysis on a confusion matrix.
+    Perform reverse merge/split (RMS) permutation analysis
+    on a confusion matrix.
 
-    This function analyzes and permutes a confusion matrix to
-    identify merge and split relationships between predicted and
-    ground truth labels. A merge relationship occurs when multiple
-    ground truth labels map to the same predicted label, while a
-    split relationship occurs when a single ground truth label
-    maps to multiple predicted labels.
+    Analyzes and permutes a confusion matrix to identify merge
+    and split relationships between predicted and ground truth
+    labels.
 
     Parameters
     ----------
@@ -357,40 +274,35 @@ def rms_permute(confusion_matrix: np.ndarray, labels: np.ndarray) -> tuple:
 
     Returns
     -------
-    permuted_matrix : numpy.ndarray
-        The confusion matrix after permuting rows and columns to group related labels
-    permuted_labels : numpy.ndarray
-        The reordered labels corresponding to the permuted matrix
-    rms_label_map : dict
-        Dictionary mapping predicted labels to tuples of
-        (ground truth label, relationship type)
-    rms_map_matrix : numpy.ndarray
-        Matrix representation of merge/split relationships between labels
-    rms_map_type : numpy.ndarray
-        Array of relationship types ('rmerge' or 'rsplit') for each relationship
-
-    See Also
-    --------
-    mheatmap.amc_postprocess : Related module for confusion matrix post-processing
-    mheatmap.spectral_permute : Alternative permutation method using spectral ordering
-
-    Notes
-    -----
-    The function identifies two types of label relationships:
-    - Merge (rmerge): Multiple ground truth labels map to same predicted label
-    - Split (rsplit): Single ground truth label maps to multiple predicted labels
+    RMSResult
+        Named tuple with fields:
+        - permuted_matrix: reordered confusion matrix
+        - permuted_labels: reordered labels
+        - rms_label_map: dict of merge/split relationships
+        - rms_map_matrix: Nx4 matrix of relationships
+        - rms_map_type: array of 'rmerge' or 'rsplit'
 
     Examples
     --------
     >>> import numpy as np
     >>> conf_mat = np.array([[2, 1, 0], [0, 3, 1], [1, 0, 2]])
     >>> labels = np.array([1, 2, 3])
-    >>> perm_mat, perm_labs, rmap, rmat, rtypes = rms_permute(conf_mat, labels)
+    >>> result = rms_permute(conf_mat, labels)
+    >>> result.permuted_matrix  # or unpack as tuple
     """
-    rms = _RMSPermute(confusion_matrix, labels)
-    permuted_matrix = rms.get_permuted_matrix()
-    permuted_labels = rms.get_permuted_labels()
-    rms_label_map = rms.rms_label_map
-    rms_map_matrix, rms_map_type = rms.get_rms_map_matrix()
+    rms_map = _make_rms_map(confusion_matrix)
+    n = len(confusion_matrix)
+    P = _make_rms_p(rms_map, n)
+    rms_label_map = _make_rms_label_map(labels, rms_map)
 
-    return permuted_matrix, permuted_labels, rms_label_map, rms_map_matrix, rms_map_type
+    permuted_matrix = _permute_matrix(confusion_matrix, P)
+    permuted_labels = _permute_labels(labels, P)
+    rms_map_matrix, rms_map_type = _compute_rms_map_matrix(rms_label_map)
+
+    return RMSResult(
+        permuted_matrix,
+        permuted_labels,
+        rms_label_map,
+        rms_map_matrix,
+        rms_map_type,
+    )
