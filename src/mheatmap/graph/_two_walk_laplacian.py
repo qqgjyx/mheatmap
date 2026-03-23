@@ -19,13 +19,15 @@ def two_walk_laplacian(
     Compute the two-walk Laplacian matrix of a bipartite graph.
 
     For a bipartite graph with biadjacency matrix B, constructs the two-walk Laplacian
-    by first forming the two-walk adjacency matrix A_tw and then computing L_tw = D_tw - A_tw,
-    where D_tw is the diagonal degree matrix.
+    by first forming the two-walk adjacency matrix A_tw and then
+    computing L_tw = D_tw - A_tw, where D_tw is the diagonal
+    degree matrix.
 
     Parameters
     ----------
     B_sub : np.ndarray
-        Biadjacency matrix of shape (m, n) representing connections between two vertex sets
+        Biadjacency matrix of shape (m, n) representing
+        connections between two vertex sets
     alpha : float, default=1.0
         Scaling factor for the adjacency matrix term in the Laplacian computation
 
@@ -41,10 +43,11 @@ def two_walk_laplacian(
     Notes
     -----
     The two-walk adjacency matrix A_tw has the block structure:
-        [BB^T    αB  ]
-        [αB^T   B^TB ]
+        [BB^T    aB  ]
+        [aB^T   B^TB ]
 
-    where α is the scaling factor controlling the influence of direct connections.
+    where a (alpha) is the scaling factor controlling the
+    influence of direct connections.
 
     The implementation automatically handles isolated vertices by removing rows/columns
     with all zeros before computation. The returned indices enable mapping back to

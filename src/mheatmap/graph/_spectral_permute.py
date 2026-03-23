@@ -20,12 +20,12 @@ using graph Laplacian eigenvectors to reveal block structures and patterns.
 import numpy as np
 from matplotlib.pylab import eigh
 
-from ._copermute_from_bipermute import copermute_from_bipermute
-from ._two_walk_laplacian import two_walk_laplacian
 from ..utils import (
     plot_bipartite_confusion_matrix,
     plot_eigen,
 )
+from ._copermute_from_bipermute import copermute_from_bipermute
+from ._two_walk_laplacian import two_walk_laplacian
 
 
 ###############################################################################
@@ -38,12 +38,15 @@ def spectral_permute(
 ) -> tuple[np.ndarray, np.ndarray]:
     """`spectral_permute(B, labels, mode='tw')`
 
-    Perform spectral reordering of a confusion matrix using graph Laplacian eigenvectors.
+    Perform spectral reordering of a confusion matrix using
+    graph Laplacian eigenvectors.
 
-    This function implements spectral reordering to reveal block structures in confusion matrices
-    by analyzing the eigenvectors of the graph Laplacian. The reordering is based on the Fiedler
-    vector (eigenvector corresponding to the second smallest eigenvalue), which provides an optimal
-    ordering that groups similar classes together.
+    This function implements spectral reordering to reveal block
+    structures in confusion matrices by analyzing the eigenvectors
+    of the graph Laplacian. The reordering is based on the Fiedler
+    vector (eigenvector corresponding to the second smallest
+    eigenvalue), which provides an optimal ordering that groups
+    similar classes together.
 
     Parameters
     ----------
@@ -193,9 +196,10 @@ def _put_zero_rows_cols_tail(
 ) -> tuple[np.ndarray, np.ndarray]:
     """Move zero rows and columns to the end of the matrix.
 
-    Identifies rows and columns with negligible values (sum < 0.1% of total) and moves them
-    to the end of the matrix. This helps isolate the core structure of the confusion matrix
-    from sparse/empty regions.
+    Identifies rows and columns with negligible values
+    (sum < 0.1% of total) and moves them to the end of the
+    matrix. This helps isolate the core structure of the
+    confusion matrix from sparse/empty regions.
 
     Parameters
     ----------
@@ -232,11 +236,13 @@ def _put_zero_rows_cols_tail(
     else:
         # Reorder matrix by concatenating significant and negligible sections
         reordered_B = np.concatenate([B[nonzero_rows], B[zero_rows]], axis=0)
-        reordered_B = np.concatenate([reordered_B[:, nonzero_cols], reordered_B[:, zero_cols]], axis=1)
-        
+        reordered_B = np.concatenate(
+            [reordered_B[:, nonzero_cols], reordered_B[:, zero_cols]], axis=1
+        )
+
         # Reorder labels to maintain correspondence with matrix rows
         reordered_labels = labels[nonzero_rows] if labels is not None else None
         if reordered_labels is not None and len(zero_rows) > 0:
             reordered_labels = np.concatenate([reordered_labels, labels[zero_rows]])
-    
+
     return reordered_B, reordered_labels

@@ -4,8 +4,8 @@
 # All rights reserved.
 # Licensed under the MIT License.
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from seaborn import despine
 from seaborn.matrix import _HeatMapper
 from seaborn.utils import axis_ticklabels_overlap

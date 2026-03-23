@@ -20,7 +20,6 @@ This script is used to permute the confusion matrix based on merge split idea.
 
 import numpy as np
 
-
 ###############################################################################
 #                                                                             #
 #                         Helper Functions                                    #
@@ -341,17 +340,20 @@ def rms_permute(confusion_matrix: np.ndarray, labels: np.ndarray) -> tuple:
 
     Perform reverse merge/split (RMS) permutation analysis on a confusion matrix.
 
-    This function analyzes and permutes a confusion matrix to identify merge and split
-    relationships between predicted and ground truth labels. A merge relationship occurs
-    when multiple ground truth labels map to the same predicted label, while a split
-    relationship occurs when a single ground truth label maps to multiple predicted labels.
+    This function analyzes and permutes a confusion matrix to
+    identify merge and split relationships between predicted and
+    ground truth labels. A merge relationship occurs when multiple
+    ground truth labels map to the same predicted label, while a
+    split relationship occurs when a single ground truth label
+    maps to multiple predicted labels.
 
     Parameters
     ----------
     confusion_matrix : numpy.ndarray
         The confusion matrix to analyze, shape (n_classes, n_classes)
     labels : numpy.ndarray
-        The labels corresponding to the confusion matrix rows/columns, shape (n_classes,)
+        The labels corresponding to the confusion matrix
+        rows/columns, shape (n_classes,)
 
     Returns
     -------
@@ -360,7 +362,8 @@ def rms_permute(confusion_matrix: np.ndarray, labels: np.ndarray) -> tuple:
     permuted_labels : numpy.ndarray
         The reordered labels corresponding to the permuted matrix
     rms_label_map : dict
-        Dictionary mapping predicted labels to tuples of (ground truth label, relationship type)
+        Dictionary mapping predicted labels to tuples of
+        (ground truth label, relationship type)
     rms_map_matrix : numpy.ndarray
         Matrix representation of merge/split relationships between labels
     rms_map_type : numpy.ndarray

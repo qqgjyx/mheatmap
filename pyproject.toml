@@ -1,39 +1,84 @@
 [build-system]
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "mheatmap"
 version = "1.2.5"
 description = "A package for mosaic/proportional heatmap visualization and matrix analysis"
 readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
 authors = [
     {name = "Juntang Wang", email = "jw853@duke.edu"}
 ]
-license = "MIT"
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Visualization",
 ]
-requires-python = ">=3.8"
 dependencies = [
-    "numpy",
-    "matplotlib",
-    "seaborn",
-    "scipy",
-    "scikit-learn",
+    "numpy>=1.23",
+    "matplotlib>=3.5",
+    "seaborn>=0.12",
+    "scipy>=1.9",
+    "scikit-learn>=1.2",
 ]
-
-[project.urls]
-"Homepage" = "https://github.com/qqgjyx/mheatmap"
-"Bug Tracker" = "https://github.com/qqgjyx/mheatmap/issues"
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-packages = ["mheatmap", "mheatmap.graph", "mheatmap.utils"]
 
 [project.optional-dependencies]
+viz = ["networkx>=3.0"]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
-] 
+    "ruff",
+    "pre-commit",
+]
+docs = [
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-awesome-pages-plugin",
+]
+
+[project.urls]
+Homepage = "https://github.com/qqgjyx/mheatmap"
+Documentation = "https://qqgjyx.com/mheatmap/"
+"Bug Tracker" = "https://github.com/qqgjyx/mheatmap/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mheatmap"]
+
+[tool.ruff]
+src = ["src"]
+target-version = "py310"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "B",   # flake8-bugbear
+    "I",   # isort
+    "UP",  # pyupgrade
+    "RUF", # ruff-specific rules
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["mheatmap"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers"]
+
+[tool.coverage.run]
+source = ["mheatmap"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true

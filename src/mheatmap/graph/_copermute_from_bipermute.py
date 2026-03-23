@@ -14,8 +14,9 @@ def copermute_from_bipermute(
 
     Copermute from bi-permutation.
 
-    Renders row permutation and column permutation of matrix B according to a co-permutation
-    of a submatrix Bsub via a bi-permutation in its symmetric embedding:
+    Renders row and column permutation of matrix B according to
+    a co-permutation of a submatrix Bsub via a bi-permutation
+    in its symmetric embedding:
         Asub = [[0, Bsub], [Bsub.T, 0]]
 
     Parameters
@@ -23,9 +24,11 @@ def copermute_from_bipermute(
     B_sizes : array_like
         A 1x2 array containing the dimensions of matrix B: [nrows, ncols]
     B_subrows : array_like
-        Row indices defining the submatrix Bsub, nrBsub x 1 integer array where nrBsub <= nrB
+        Row indices defining the submatrix Bsub, nrBsub x 1
+        integer array where nrBsub <= nrB
     B_subcols : array_like
-        Column indices defining the submatrix Bsub, ncBsub x 1 integer array where ncBsub <= ncB
+        Column indices defining the submatrix Bsub, ncBsub x 1
+        integer array where ncBsub <= ncB
     p_Asub : array_like
         Permutation vector for the symmetric embedding of Bsub, (nr+nc)x1 integer array
 

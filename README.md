@@ -57,6 +57,15 @@ cd mheatmap
 pip install .
 ```
 
+### Development setup
+
+```bash
+uv sync --extra dev      # Install with dev tools (pytest, ruff, pre-commit)
+uv run pytest            # Run tests
+uv run ruff check src/   # Lint
+uv run ruff format src/  # Format
+```
+
 ## 📘 Documentation
 
 Comprehensive documentation is available [here](https://www.qqgjyx.com/mheatmap).

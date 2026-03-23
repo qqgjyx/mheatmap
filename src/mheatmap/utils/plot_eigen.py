@@ -1,8 +1,9 @@
 """Plot the eigenvalues and the eigenvectors"""
 
 import numpy as np
-from matplotlib import pyplot as plt
 import seaborn as sns
+from matplotlib import pyplot as plt
+
 from ._base import test_decorator
 
 
@@ -11,7 +12,8 @@ def plot_eigen(eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> None:
     """Plot eigenvalues and eigenvectors of a matrix.
 
     Creates two visualization plots:
-    1. Scatter plot of eigenvalues on log scale, with negative values in red and positive in blue
+    1. Scatter plot of eigenvalues on log scale, with negative
+       values in red and positive in blue
     2. Heatmap visualization of the eigenvector matrix
 
     Parameters
@@ -27,7 +29,7 @@ def plot_eigen(eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> None:
         Displays the plots using matplotlib
     """
     # Plot eigenvalues
-    plt.figure(figsize=(5,4))
+    plt.figure(figsize=(5, 4))
     colors = ["red" if ev <= 0 else "blue" for ev in eigenvalues]
     plt.gca().set_yscale("log")
     plt.scatter(np.arange(len(eigenvalues)), np.abs(eigenvalues), c=colors, alpha=0.6)
@@ -38,7 +40,7 @@ def plot_eigen(eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> None:
     plt.show()
 
     # Plot eigenvectors as heatmap
-    plt.figure(figsize=(5,4))
+    plt.figure(figsize=(5, 4))
     sns.heatmap(
         eigenvectors,
         cmap="YlGnBu",
