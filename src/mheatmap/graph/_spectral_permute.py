@@ -214,12 +214,8 @@ def _put_zero_rows_cols_tail(
     nonzero_cols = np.setdiff1d(np.arange(B.shape[1]), zero_cols)
 
     # Handle edge cases where all rows/columns might be zero or non-zero
-    if len(nonzero_rows) == 0:
-        reordered_B = B.copy()
-        reordered_labels = labels.copy() if labels is not None else None
-    elif len(zero_rows) == 0:
-        reordered_B = B.copy()
-        reordered_labels = labels.copy() if labels is not None else None
+    if len(zero_rows) == 0 or len(nonzero_rows) == 0:
+        return B.copy(), labels.copy() if labels is not None else None
     else:
         # Reorder matrix by concatenating significant and negligible sections
         reordered_B = np.concatenate([B[nonzero_rows], B[zero_rows]], axis=0)

@@ -22,6 +22,10 @@ from typing import NamedTuple
 
 import numpy as np
 
+# Default precision/recall threshold for identifying weak classifications.
+# Below this threshold, a class is considered a candidate for merge/split grouping.
+_DEFAULT_THRESHOLD = 0.37
+
 ###############################################################################
 #                                                                             #
 #                         Helper Functions                                    #
@@ -29,7 +33,7 @@ import numpy as np
 ###############################################################################
 
 
-def _make_rms_map(conf_mat: np.ndarray, threshold: float = 0.37) -> dict:
+def _make_rms_map(conf_mat: np.ndarray, threshold: float = _DEFAULT_THRESHOLD) -> dict:
     """
     Generates a reverse merge/split mapping based on confusion matrix analysis.
 
