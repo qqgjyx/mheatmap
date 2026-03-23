@@ -4,10 +4,7 @@ import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from ._base import test_decorator
 
-
-@test_decorator
 def plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1):
     """`plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1)`
 

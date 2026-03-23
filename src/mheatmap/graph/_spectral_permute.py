@@ -20,10 +20,6 @@ using graph Laplacian eigenvectors to reveal block structures and patterns.
 import numpy as np
 from scipy.linalg import eigh
 
-from ..utils import (
-    plot_bipartite_confusion_matrix,
-    plot_eigen,
-)
 from ._copermute_from_bipermute import copermute_from_bipermute
 from ._two_walk_laplacian import two_walk_laplacian
 
@@ -110,9 +106,6 @@ def spectral_permute(
         nonzero_idx = np.where(np.abs(eigenvalues) > 1e-10)[0][0]
         fiedler_vector = eigenvectors[:, nonzero_idx]
 
-        # Visualize eigenspectrum
-        plot_eigen(eigenvalues, eigenvectors)
-
         # Sort vertices based on Fiedler vector
         sorted_rows_indices = np.argsort(fiedler_vector)
         sorted_cols_indices = sorted_rows_indices
@@ -130,9 +123,6 @@ def spectral_permute(
         nonzero_idx = np.where(np.abs(eigenvalues) > 1e-10)[0][0]
         fiedler_vector = eigenvectors[:, nonzero_idx]
 
-        # Visualize eigenspectrum
-        plot_eigen(eigenvalues, eigenvectors)
-
         # Get permutation from Fiedler vector
         p_Asub = np.argsort(fiedler_vector)
 
@@ -144,9 +134,6 @@ def spectral_permute(
     # Apply permutation to get reordered matrix and labels
     reordered_B = B[sorted_rows_indices, :][:, sorted_cols_indices]
     reordered_labels = labels[sorted_rows_indices]
-
-    # Visualize result
-    plot_bipartite_confusion_matrix(reordered_B, reordered_labels)
 
     return reordered_B, reordered_labels
 

@@ -12,21 +12,10 @@ Key Features:
 Author: Juntang Wang @ Duke University
 """
 
-# Core visualization
-# Store original matplotlib configuration
-import matplotlib as mpl
-
-# Post-processing utilities
 from ._amc_postprocess import amc_postprocess, mask_zeros_from_gt
-
-# Matrix permutation
 from ._rms_permute import rms_permute
-
-# Graph-based algorithms
 from .graph import copermute_from_bipermute, spectral_permute, two_walk_laplacian
 from .matrix import mosaic_heatmap
-
-_original_rcParams = mpl.rcParams.copy()
 
 # Package version
 __version__ = "1.2.5"

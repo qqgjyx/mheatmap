@@ -11,9 +11,7 @@ which captures both direct connections and two-step walks in the graph structure
 import numpy as np
 
 
-def two_walk_laplacian(
-    B_sub: np.ndarray, alpha: float = 1
-) -> np.ndarray:
+def two_walk_laplacian(B_sub: np.ndarray, alpha: float = 1) -> np.ndarray:
     """`two_walk_laplacia(B_sub, alpha=1)`
 
     Compute the two-walk Laplacian matrix of a bipartite graph.
