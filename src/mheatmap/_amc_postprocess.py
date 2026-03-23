@@ -20,8 +20,8 @@ Notes
 # Licensed under the MIT License.
 
 import numpy as np
-from sklearn.metrics import confusion_matrix
 from scipy.optimize import linear_sum_assignment
+from sklearn.metrics import confusion_matrix
 
 
 ###############################################################################
@@ -142,7 +142,7 @@ def _align_labels(y_true, y_pred, mask_zeros=True):
 
     mapping = {}
 
-    for row_i, col_i in zip(row_ind, col_ind):
+    for row_i, col_i in zip(row_ind, col_ind, strict=True):
         mapping[labels[col_i]] = labels[row_i]
 
     aligned_pred = np.array([mapping.get(p, p) for p in y_pred])
@@ -234,9 +234,10 @@ def amc_postprocess(
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """`amc_postprocess(pred_, gt)`
 
-    Post-process predictions by aligning labels and computing confusion matrix.
-    This function performs Align-Mask-Confusion (AMC) post-processing on predicted labels
-    to optimally align them with ground truth labels and compute the confusion matrix.
+    Post-process predictions by aligning labels and computing
+    confusion matrix. This function performs Align-Mask-Confusion
+    (AMC) post-processing on predicted labels to optimally align
+    them with ground truth labels and compute the confusion matrix.
 
     Parameters
     ----------

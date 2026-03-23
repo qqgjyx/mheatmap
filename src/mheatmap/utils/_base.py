@@ -1,17 +1,18 @@
 """Base utilities for test control and plotting functions."""
 
-import numpy as np
 from functools import wraps
+
 from ..constants import get_test_mode
 
 
 def test_decorator(func):
     """Decorator to control execution of plotting functions in test mode.
 
-    This decorator enables conditional execution of plotting functions based on the global
-    test mode setting. When test mode is disabled, the decorated function will be skipped
-    and return None. This helps prevent unwanted plot generation during automated testing
-    or batch processing.
+    This decorator enables conditional execution of plotting
+    functions based on the global test mode setting. When test
+    mode is disabled, the decorated function will be skipped
+    and return None. This helps prevent unwanted plot generation
+    during automated testing or batch processing.
 
     Parameters
     ----------

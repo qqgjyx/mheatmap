@@ -1,38 +1,48 @@
-name: ci 
+name: CI
+
 on:
   push:
-    branches:
-      - master 
-      - main
-permissions:
-  contents: write
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
-  deploy:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Configure Git Credentials
-        run: |
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --extra dev
+      - run: uv run ruff check src/ tests/
+      - run: uv run ruff format --check src/ tests/
+
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --extra dev
+      - run: uv run pytest --cov
+
+  docs:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, test]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+      - run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
-      - uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
-      - name: Install dependencies
-        run: pip install mkdocs-material mkdocstrings-python mkdocs-awesome-pages-plugin build
-      - name: Build the python package
-        run: python -m build
-      - name: Pip install the python package
-        run: pip install dist/*.whl
-      - name: Build and deploy
-        run: mkdocs build
-      - run: mkdocs gh-deploy --force
+      - run: uv sync --extra docs
+      - run: uv run mkdocs gh-deploy --force

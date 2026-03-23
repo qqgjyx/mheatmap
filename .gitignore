@@ -30,3 +30,8 @@ site/
 .DS_Store
 *.DS_Store
 
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+coverage.xml

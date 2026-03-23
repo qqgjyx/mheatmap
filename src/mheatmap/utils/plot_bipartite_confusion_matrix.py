@@ -1,9 +1,8 @@
 """Create a visually enhanced bipartite graph visualization from confusion matrix."""
 
 import numpy as np
-import networkx as nx
-from matplotlib import pyplot as plt
 import seaborn as sns
+from matplotlib import pyplot as plt
 
 from ._base import test_decorator
 
@@ -14,9 +13,11 @@ def plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1):
 
     Plot an enhanced bipartite graph visualization of a confusion matrix.
 
-    Creates a visually appealing bipartite graph visualization where ground truth classes
-    are represented as nodes on the left side and predicted classes as nodes on the right
-    side. Edge weights represent confusion matrix values, with thicker edges indicating
+    Creates a visually appealing bipartite graph visualization
+    where ground truth classes are represented as nodes on the
+    left side and predicted classes as nodes on the right side.
+    Edge weights represent confusion matrix values, with thicker
+    edges indicating
     stronger connections. Node sizes are scaled based on class frequencies.
 
     Parameters
@@ -44,9 +45,13 @@ def plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1):
 
     .. versionadded:: 1.1.0
     """
-    # Configure plot style
-    # plt.style.use("seaborn-v0_8")
-    # plt.rcParams["figure.facecolor"] = "#f0f0f0"
+    try:
+        import networkx as nx
+    except ImportError as err:
+        raise ImportError(
+            "networkx is required for plot_bipartite_confusion_matrix. "
+            "Install it with: pip install mheatmap[viz]"
+        ) from err
 
     total_weight = np.sum(reordered_cm)
     n_classes = len(reordered_labels)
@@ -88,7 +93,7 @@ def plot_bipartite_confusion_matrix(reordered_cm, reordered_labels, epsilon=1):
     }
 
     # Configure plot layout
-    plt.figure(figsize=(5,4))
+    plt.figure(figsize=(5, 4))
     plt.title("Confusion Matrix Bipartite Graph")
     plt.axis("off")
 

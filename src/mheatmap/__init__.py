@@ -13,7 +13,8 @@ Author: Juntang Wang @ Duke University
 """
 
 # Core visualization
-from .matrix import mosaic_heatmap
+# Store original matplotlib configuration
+import matplotlib as mpl
 
 # Post-processing utilities
 from ._amc_postprocess import amc_postprocess, mask_zeros_from_gt
@@ -23,9 +24,8 @@ from ._rms_permute import rms_permute
 
 # Graph-based algorithms
 from .graph import copermute_from_bipermute, spectral_permute, two_walk_laplacian
+from .matrix import mosaic_heatmap
 
-# Store original matplotlib configuration
-import matplotlib as mpl
 _original_rcParams = mpl.rcParams.copy()
 
 # Package version
@@ -33,11 +33,11 @@ __version__ = "1.2.5"
 
 # Public API
 __all__ = [
-    "mosaic_heatmap",
-    "mask_zeros_from_gt",
     "amc_postprocess",
-    "rms_permute",
     "copermute_from_bipermute",
+    "mask_zeros_from_gt",
+    "mosaic_heatmap",
+    "rms_permute",
     "spectral_permute",
     "two_walk_laplacian",
 ]
