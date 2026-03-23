@@ -154,81 +154,6 @@ def _align_labels(y_true, y_pred, mask_zeros=True):
 #                         AMC Post-processing                                 #
 #                                                                             #
 ###############################################################################
-class _AMCPostprocess:
-    """Post-processing class for Automatic Model Calibration (AMC) Align Mask Confusion.
-
-    A comprehensive post-processing pipeline for model predictions that handles:
-    - Label alignment between predictions and ground truth
-    - Zero-value masking for unlabeled data points
-    - Confusion matrix generation and spectral reordering
-
-    The class implements a systematic workflow to prepare model outputs for evaluation
-    and analysis, ensuring proper handling of unlabeled data and optimal label matching.
-
-    Parameters
-    ----------
-    pred_ : np.ndarray
-        Raw model prediction labels, shape (n_samples,)
-    gt : np.ndarray
-        Ground truth labels, shape (n_samples,)
-
-    Attributes
-    ----------
-    pred_ : np.ndarray
-        Model predictions shifted by +1 to ensure positive label values
-    gt : np.ndarray
-        Original ground truth labels preserved for reference
-
-    aligned_pred_ : np.ndarray
-        Predictions optimally aligned to ground truth via linear assignment
-
-    masked_pred : np.ndarray
-        Aligned predictions with unlabeled points (zeros) masked
-    masked_gt : np.ndarray
-        Ground truth with unlabeled points masked
-
-    conf_mat_labels : np.ndarray
-        Union of unique labels from masked ground truth and predictions
-    conf_mat : np.ndarray
-        Confusion matrix computed from masked and aligned predictions
-    Notes
-    -----
-    The class assumes zero values represent unlabeled data points. The prediction
-    labels are automatically shifted by +1 during initialization to avoid conflicts
-    with the zero-value convention for unlabeled points.
-    """
-
-    def __init__(self, pred_: np.ndarray, gt: np.ndarray) -> None:
-        # Initialize with shifted predictions to reserve 0 for unlabeled points
-        self.pred_ = pred_ + 1
-        self.gt = gt.copy()  # Store original ground truth
-
-        # Perform optimal label alignment
-        self.aligned_pred_ = _align_labels(self.gt, self.pred_)
-
-        # Apply zero-value masking
-        self.masked_pred = mask_zeros_from_gt(self.aligned_pred_, self.gt)
-        self.masked_gt = mask_zeros_from_gt(self.gt, self.gt)
-
-        # Compute confusion matrix with unified label set
-        self.conf_mat_labels = np.union1d(
-            np.unique(self.masked_gt), np.unique(self.masked_pred)
-        )
-        self.conf_mat = confusion_matrix(self.masked_gt, self.masked_pred)
-
-    def get_gt(self):
-        return self.gt
-
-    def get_aligned_pred(self):
-        return self.aligned_pred_
-
-    def get_C(self):
-        return self.conf_mat
-
-    def get_C_labels(self):
-        return self.conf_mat_labels
-
-
 def amc_postprocess(
     pred_: np.ndarray, gt: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -250,10 +175,8 @@ def amc_postprocess(
     -------
     aligned_pred : np.ndarray
         Predictions with labels optimally aligned to ground truth
-
     conf_mat : np.ndarray
         Confusion matrix computed from aligned predictions
-
     conf_mat_labels : np.ndarray
         Union of unique labels from ground truth and predictions
 
@@ -266,22 +189,22 @@ def amc_postprocess(
     Examples
     --------
     >>> import numpy as np
-    >>> # Example with 3 classes and some unlabeled points (zeros)
     >>> gt = np.array([1, 2, 0, 3, 1, 2])
     >>> pred = np.array([2, 3, 0, 1, 2, 3])
     >>> aligned_pred, conf_mat, labels = amc_postprocess(pred, gt)
-    >>> print("Aligned predictions:", aligned_pred)
-    Aligned predictions: [1 2 0 3 1 2]
-    >>> print("Confusion matrix:")
-    >>> print(conf_mat)
-    [[2 0 0]
-     [0 2 0]
-     [0 0 1]]
-    >>> print("Labels:", labels)
-    Labels: [1 2 3]
     """
-    amc = _AMCPostprocess(pred_, gt)
-    pr = amc.get_aligned_pred()
-    C = amc.get_C()
-    C_labels = amc.get_C_labels()
-    return pr, C, C_labels
+    # Shift predictions to reserve 0 for unlabeled
+    pred_shifted = pred_ + 1
+
+    # Align labels via Hungarian algorithm
+    aligned_pred = _align_labels(gt, pred_shifted)
+
+    # Mask unlabeled points
+    masked_pred = mask_zeros_from_gt(aligned_pred, gt)
+    masked_gt = mask_zeros_from_gt(gt, gt)
+
+    # Compute confusion matrix
+    conf_mat_labels = np.union1d(np.unique(masked_gt), np.unique(masked_pred))
+    conf_mat = confusion_matrix(masked_gt, masked_pred)
+
+    return aligned_pred, conf_mat, conf_mat_labels
