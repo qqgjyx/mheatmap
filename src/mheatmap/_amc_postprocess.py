@@ -138,7 +138,7 @@ def _align_labels(y_true, y_pred, mask_zeros=True):
     conf_mat = confusion_matrix(y_true_filtered, y_pred_filtered, labels=labels)
 
     # Find optimal assignment using Jonker-Volgenant algorithm
-    row_ind, col_ind = linear_sum_assignment(-conf_mat)
+    row_ind, col_ind = linear_sum_assignment(conf_mat, maximize=True)
 
     mapping = {}
 

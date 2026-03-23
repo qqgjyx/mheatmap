@@ -18,7 +18,7 @@ using graph Laplacian eigenvectors to reveal block structures and patterns.
 # Authors: Juntang Wang, Dimitris Floros, Nikos Pitsianis, Xiaobai Sun
 
 import numpy as np
-from matplotlib.pylab import eigh
+from scipy.linalg import eigh
 
 from ..utils import (
     plot_bipartite_confusion_matrix,
