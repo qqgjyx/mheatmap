@@ -2,7 +2,7 @@
 
 > Living doc. Update as work progresses.
 
-## Status: v1.2.5, Phase 1+2 complete, Phase 3 planned
+## Status: v1.2.5, Phase 1+2+3 complete
 
 ### What's Done
 
