@@ -35,3 +35,4 @@ site/
 .ruff_cache/
 htmlcov/
 coverage.xml
+.coverage
