@@ -17,11 +17,32 @@ using graph Laplacian eigenvectors to reveal block structures and patterns.
 # "Clustering Methods for Hyperspectral Image Analysis"
 # Authors: Juntang Wang, Dimitris Floros, Nikos Pitsianis, Xiaobai Sun
 
+from typing import NamedTuple
+
 import numpy as np
 from scipy.linalg import eigh
 
 from ._copermute_from_bipermute import copermute_from_bipermute
 from ._two_walk_laplacian import two_walk_laplacian
+
+
+class SpectralPermuteResult(NamedTuple):
+    """Result of spectral_permute with column permutation support.
+
+    Attributes
+    ----------
+    reordered_matrix : np.ndarray
+        Reordered confusion/transition matrix.
+    reordered_row_labels : np.ndarray
+        Row labels reordered to match the permuted matrix rows.
+    col_perm : np.ndarray
+        Column permutation indices. ``col_perm[j] = k`` means old column ``j``
+        is moved to new position ``k``. Only meaningful for ``mode='tw'``.
+    """
+
+    reordered_matrix: np.ndarray
+    reordered_row_labels: np.ndarray
+    reordered_col_labels: np.ndarray
 
 
 ###############################################################################
@@ -30,9 +51,13 @@ from ._two_walk_laplacian import two_walk_laplacian
 #                                                                             #
 ###############################################################################
 def spectral_permute(
-    B: np.ndarray, labels: np.ndarray, mode: str = "tw"
-) -> tuple[np.ndarray, np.ndarray]:
-    """`spectral_permute(B, labels, mode='tw')`
+    B: np.ndarray,
+    row_labels: np.ndarray,
+    mode: str = "tw",
+    *,
+    col_labels: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray] | SpectralPermuteResult:
+    """`spectral_permute(B, row_labels, mode='tw', *, col_labels=None)`
 
     Perform spectral reordering of a confusion matrix using
     graph Laplacian eigenvectors.
@@ -47,20 +72,42 @@ def spectral_permute(
     Parameters
     ----------
     B : np.ndarray
-        Input confusion matrix to be reordered, shape (n_classes, n_classes)
-    labels : np.ndarray
-        Class labels corresponding to matrix rows/columns, shape (n_classes,)
+        Input matrix to be reordered. For ``mode='tw'`` supports shape
+        ``(n_rows, n_cols)``; for ``mode='fiedler'`` must be square.
+    row_labels : np.ndarray
+        Class labels corresponding to matrix rows, shape ``(n_rows,)``.
     mode : {'tw', 'fiedler'}, default='tw'
         Spectral reordering method:
-        - 'tw': Use two-walk Laplacian for bipartite graph analysis
-        - 'fiedler': Use standard Fiedler vector approach
+
+        - ``'tw'``: Use two-walk Laplacian for bipartite graph analysis.
+          Supports rectangular matrices and returns a separate column
+          permutation via ``col_labels``.
+        - ``'fiedler'``: Use standard Fiedler vector approach. **Only
+          supports square matrices** (``n_rows == n_cols``).
+
+    col_labels : np.ndarray | None, optional
+        Column labels for rectangular matrices. When provided (not
+        ``None``), returns a ``SpectralPermuteResult`` that includes the
+        reordered columns ``reordered_col_labels``. For confusion matrices
+        (square, shared labels) this parameter is typically omitted.
 
     Returns
     -------
     reordered_cm : np.ndarray
-        Reordered confusion matrix with revealed block structure
+        Reordered matrix with revealed block structure.
     reordered_labels : np.ndarray
-        Class labels reordered to match the permuted matrix rows/columns
+        Row labels reordered to match the permuted matrix rows.
+    SpectralPermuteResult (when ``col_labels`` is provided)
+        Named tuple with fields:
+
+        - ``reordered_matrix``: Reordered matrix
+        - ``reordered_row_labels``: Row labels reordered
+        - ``reordered_col_labels``: Col labels reordered
+
+    Raises
+    ------
+    ValueError
+        If ``mode='fiedler'`` is used with a non-square matrix.
 
     See Also
     --------
@@ -74,6 +121,7 @@ def spectral_permute(
     1. For mode='tw':
         - Constructs two-walk Laplacian capturing bipartite graph structure
         - Handles isolated vertices automatically
+        - Computes separate row and column permutations via co-permutation
     2. For mode='fiedler':
         - Computes standard graph Laplacian L = D - A
     3. Finds Fiedler vector (second smallest eigenvector)
@@ -93,10 +141,24 @@ def spectral_permute(
     >>> conf_mat = np.array([[5, 2, 0], [2, 3, 1], [0, 1, 4]])
     >>> labels = np.array(['A', 'B', 'C'])
     >>> reordered_mat, reordered_labs = spectral_permute(conf_mat, labels)
+
+    With column labels on a rectangular matrix (``mode='tw'`` only):
+
+    >>> import numpy as np
+    >>> B = np.array([[1, 0.5, 0.2, 0.1], [0.3, 1, 0.8, 0.4], [0.1, 0.2, 1, 0.9]])
+    >>> row_labels = np.array(['r0', 'r1', 'r2'])
+    >>> col_labels = np.array(['c0', 'c1', 'c2', 'c3'])
+    >>> result = spectral_permute(B, row_labels, col_labels=col_labels)
+    >>> result.reordered_col_labels
     """
     rows, cols = B.shape
 
     if mode == "fiedler":
+        if rows != cols:
+            raise ValueError(
+                "mode='fiedler' only supports square matrices "
+                f"(got shape ({rows}, {cols})). Use mode='tw' for rectangular matrices."
+            )
         # Compute standard graph Laplacian L = D - A
         D = np.diag(np.sum(B, axis=1))
         L = D - B
@@ -112,7 +174,7 @@ def spectral_permute(
 
     elif mode == "tw":
         # Handle isolated vertices
-        B, labels = _put_zero_rows_cols_tail(B, labels)
+        B, row_labels = _put_zero_rows_cols_tail(B, row_labels)
         B_sub, Bsub_rows, Bsub_cols = _get_B_sub(B)
 
         # Compute two-walk Laplacian and its eigendecomposition
@@ -133,9 +195,14 @@ def spectral_permute(
 
     # Apply permutation to get reordered matrix and labels
     reordered_B = B[sorted_rows_indices, :][:, sorted_cols_indices]
-    reordered_labels = labels[sorted_rows_indices]
+    reordered_row_labels = row_labels[sorted_rows_indices]
 
-    return reordered_B, reordered_labels
+    if col_labels is not None:
+        reordered_column_labels = col_labels[sorted_cols_indices]
+        return SpectralPermuteResult(
+            reordered_B, reordered_row_labels, reordered_column_labels
+        )
+    return reordered_B, reordered_row_labels
 
 
 ###############################################################################

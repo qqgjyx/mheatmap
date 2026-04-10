@@ -36,3 +36,5 @@ site/
 htmlcov/
 coverage.xml
 .coverage
+
+examples/data
