@@ -10,8 +10,8 @@ from ._spectral_permute import SpectralPermuteResult, spectral_permute
 from ._two_walk_laplacian import two_walk_laplacian
 
 __all__ = [
+    "SpectralPermuteResult",
     "copermute_from_bipermute",
     "spectral_permute",
-    "SpectralPermuteResult",
     "two_walk_laplacian",
 ]
