@@ -17,32 +17,11 @@ using graph Laplacian eigenvectors to reveal block structures and patterns.
 # "Clustering Methods for Hyperspectral Image Analysis"
 # Authors: Juntang Wang, Dimitris Floros, Nikos Pitsianis, Xiaobai Sun
 
-from typing import NamedTuple
-
 import numpy as np
 from scipy.linalg import eigh
 
 from ._copermute_from_bipermute import copermute_from_bipermute
 from ._two_walk_laplacian import two_walk_laplacian
-
-
-class SpectralPermuteResult(NamedTuple):
-    """Result of spectral_permute with column permutation support.
-
-    Attributes
-    ----------
-    reordered_matrix : np.ndarray
-        Reordered confusion/transition matrix.
-    reordered_row_labels : np.ndarray
-        Row labels reordered to match the permuted matrix rows.
-    col_perm : np.ndarray
-        Column permutation indices. ``col_perm[j] = k`` means old column ``j``
-        is moved to new position ``k``. Only meaningful for ``mode='tw'``.
-    """
-
-    reordered_matrix: np.ndarray
-    reordered_row_labels: np.ndarray
-    reordered_col_labels: np.ndarray
 
 
 ###############################################################################
@@ -56,7 +35,7 @@ def spectral_permute(
     mode: str = "tw",
     *,
     col_labels: np.ndarray | None = None,
-) -> tuple[np.ndarray, np.ndarray] | SpectralPermuteResult:
+) -> tuple[np.ndarray, np.ndarray] | dict:
     """`spectral_permute(B, row_labels, mode='tw', *, col_labels=None)`
 
     Perform spectral reordering of a confusion matrix using
@@ -87,9 +66,9 @@ def spectral_permute(
 
     col_labels : np.ndarray | None, optional
         Column labels for rectangular matrices. When provided (not
-        ``None``), returns a ``SpectralPermuteResult`` that includes the
-        reordered columns ``reordered_col_labels``. For confusion matrices
-        (square, shared labels) this parameter is typically omitted.
+        ``None``), returns a dict that includes the reordered columns
+        ``reordered_col_labels``. For confusion matrices (square, shared
+        labels) this parameter is typically omitted.
 
     Returns
     -------
@@ -97,8 +76,8 @@ def spectral_permute(
         Reordered matrix with revealed block structure.
     reordered_labels : np.ndarray
         Row labels reordered to match the permuted matrix rows.
-    SpectralPermuteResult (when ``col_labels`` is provided)
-        Named tuple with fields:
+    dict (when ``col_labels`` is provided)
+        Dictionary with fields:
 
         - ``reordered_matrix``: Reordered matrix
         - ``reordered_row_labels``: Row labels reordered
@@ -199,9 +178,11 @@ def spectral_permute(
 
     if col_labels is not None:
         reordered_column_labels = col_labels[sorted_cols_indices]
-        return SpectralPermuteResult(
-            reordered_B, reordered_row_labels, reordered_column_labels
-        )
+        return {
+            "reordered_matrix": reordered_B,
+            "reordered_row_labels": reordered_row_labels,
+            "reordered_col_labels": reordered_column_labels,
+        }
     return reordered_B, reordered_row_labels
 
 

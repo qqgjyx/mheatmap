@@ -6,11 +6,10 @@ Graph-based permutation
 # License: MIT
 
 from ._copermute_from_bipermute import copermute_from_bipermute
-from ._spectral_permute import SpectralPermuteResult, spectral_permute
+from ._spectral_permute import spectral_permute
 from ._two_walk_laplacian import two_walk_laplacian
 
 __all__ = [
-    "SpectralPermuteResult",
     "copermute_from_bipermute",
     "spectral_permute",
     "two_walk_laplacian",

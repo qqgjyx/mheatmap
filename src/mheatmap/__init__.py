@@ -15,7 +15,6 @@ Author: Juntang Wang @ Duke University
 from ._amc_postprocess import amc_postprocess, mask_zeros_from_gt
 from ._rms_permute import RMSResult, rms_permute
 from .graph import (
-    SpectralPermuteResult,
     copermute_from_bipermute,
     spectral_permute,
     two_walk_laplacian,
@@ -28,7 +27,6 @@ __version__ = "1.2.5"
 # Public API
 __all__ = [
     "RMSResult",
-    "SpectralPermuteResult",
     "amc_postprocess",
     "copermute_from_bipermute",
     "mask_zeros_from_gt",
