@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from mheatmap.graph import (
     copermute_from_bipermute,
@@ -96,3 +97,18 @@ class TestGraphFunctions:
         L_tw = two_walk_laplacian(B)
         assert L_tw.shape == (2, 2)
         assert np.allclose(L_tw, L_tw.T)
+
+    def test_spectral_permute_fiedler_rectangular_raises(self):
+        """Test that ValueError is raised when mode='fiedler'
+        is used with a rectangular matrix."""
+        # Create a rectangular matrix (3 rows, 4 columns)
+        rectangular_matrix = np.array(
+            [[1, 0.5, 0.2, 0.1], [0.5, 1, 0.7, 0.4], [0.2, 0.7, 1, 0.9]]
+        )
+        labels = np.array(["A", "B", "C"])
+
+        # Verify that ValueError is raised with the expected message
+        with pytest.raises(
+            ValueError, match="mode='fiedler' only supports square matrices"
+        ):
+            spectral_permute(rectangular_matrix, labels, mode="fiedler")
