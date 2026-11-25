@@ -68,7 +68,7 @@ uv run ruff format src/  # Format
 
 ## 📘 Documentation
 
-Comprehensive documentation is available [here](https://www.qqgjyx.com/mheatmap).
+Comprehensive documentation is available [here](https://juntangw.com/mheatmap/).
 
 ## 📚 Examples
 

@@ -47,7 +47,7 @@ docs = [
 
 [project.urls]
 Homepage = "https://github.com/qqgjyx/mheatmap"
-Documentation = "https://qqgjyx.com/mheatmap/"
+Documentation = "https://juntangw.com/mheatmap/"
 "Bug Tracker" = "https://github.com/qqgjyx/mheatmap/issues"
 
 [tool.hatch.build.targets.wheel]
