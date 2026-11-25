@@ -5,7 +5,7 @@ extra_css:
   - stylesheets/extra.css
   - https://unpkg.com/katex@0/dist/katex.min.css
 site_name: mheatmap
-site_url: https://qqgjyx.com/mheatmap/
+site_url: https://juntangw.com/mheatmap/
 theme:
   features:
     - navigation.instant
@@ -83,7 +83,7 @@ extra:
       - icon: fontawesome/brands/linkedin
         link: https://www.linkedin.com/in/q9gjyx/
       - icon: fontawesome/solid/user
-        link: https://www.qqgjyx.com
+        link: https://juntangw.com
         name: Juntang Wang personal website
   generator: false
 extra_javascript:
